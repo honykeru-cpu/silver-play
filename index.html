@@ -6,15 +6,15 @@
     <title>Silver Play Pro</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Fokus (Odak) Efekti - Orijinal YouTube gibi */
+        /* Orijinal YouTube odaklanma efekti */
         .box.selected {
-            border: 4px solid #00d4ff !important;
+            border: 5px solid #00d4ff !important;
             transform: scale(1.1);
-            box-shadow: 0 0 20px #00d4ff;
-            transition: all 0.2s ease-in-out;
+            box-shadow: 0 0 25px #00d4ff;
+            transition: 0.2s;
         }
-        /* YouTube için tam ekran katman */
-        #youtube-layer {
+        /* YouTube için tam ekran pencere */
+        #yt-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 9999; display: none;
         }
@@ -24,33 +24,33 @@
 <body class="bg-purple">
 
     <div class="container">
-        <h1 class="main-title" id="nav-home">SILVER PLAY PRO</h1>
+        <h1 class="main-title" id="main-nav" style="cursor: pointer;">SILVER PLAY PRO</h1>
         <p style="color: white; text-align: center; margin-bottom: 20px;">API Mode: Active (No-Ads)</p>
         
         <div class="grid-container">
-            <a href="https://yewtu.be/trending" class="box selectable" data-type="youtube">
+            <a href="https://yewtu.be/trending" class="box selectable" data-target="internal">
                 <img src="youtube.png" alt="YouTube">
-                <span>YouTube (No-Ads)</span>
+                <span>YouTube</span>
             </a>
 
-            <a href="https://dizipal.com" class="box selectable" data-type="browser">
+            <a href="https://dizipal1539.com/" class="box selectable" data-target="external">
                 <img src="dizil.png" alt="Dizipal">
                 <span>Dizipal</span>
             </a>
 
-            <a href="https://vidsrc.me/embed/movie?trending=1" class="box selectable" data-type="browser">
+            <a href="https://www.hdfilmcehennemi.page/" class="box selectable" data-target="external">
                 <img src="hdfilmcehennemi.png" alt="HD Film">
-                <span>HD Film</span>
+                <span>HD Film Cehennemi</span>
             </a>
 
-            <a href="https://movie-web.app" class="box selectable" data-type="browser">
-                <img src="dizi kutusu.png" alt="Dizibox">
-                <span>Dizibox</span>
+            <a href="https://www.hdfilmizle.to/" class="box selectable" data-target="external">
+                <img src="dizi kutusu.png" alt="HD Film İzle">
+                <span>HD Film İzle</span>
             </a>
         </div>
     </div>
 
-    <div id="youtube-layer">
+    <div id="yt-layer">
         <iframe id="yt-frame" src="" allowfullscreen></iframe>
     </div>
 
