@@ -6,7 +6,7 @@
     <title>Silver Play API Launcher</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Kırık'ın kodunun çalışması için gereken gizli pencere ayarları */
+        /* Tasarımı bozmaz, Kırık'ın kodunun çalışması için gereken video penceresi */
         #video-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 9999;
@@ -25,25 +25,25 @@
 
     <div class="container">
         <h1 class="main-title">SILVER PLAY PRO</h1>
-        <p style="color: white; text-align: center; margin-bottom: 20px;">API Mode: Active (No-Ads)</p>
+        <p style="color: white; text-align: center; margin-bottom: 20px;">API Mode: Active (YouTube Ad-Free)</p>
         
         <div class="grid-container">
-            <a href="https://iv.melmac.space/trending" class="box selectable">
+            <a href="https://iv.melmac.space/trending" class="box selectable" data-name="YouTube PRO">
                 <img src="youtube.png" alt="YouTube API">
                 <span>YouTube (No-Ads)</span>
             </a>
 
-            <a href="https://piped.video/trending?tab=Movies" class="box selectable">
+            <a href="https://piped.video/trending" class="box selectable" data-name="Dizipal API">
                 <img src="dizil.png" alt="Dizipal API">
                 <span>Dizipal API</span>
             </a>
 
-            <a href="https://vidsrc.xyz/embed/movie?trending=1" class="box selectable">
+            <a href="https://vidsrc.xyz/embed/movie?trending=1" class="box selectable" data-name="Movie API">
                 <img src="hdfilmcehennemi.png" alt="Movie API">
                 <span>HD Film (Clean)</span>
             </a>
 
-            <a href="https://movie-web.app/search/series" class="box selectable">
+            <a href="https://movie-web.app/search/series" class="box selectable" data-name="Dizibox API">
                 <img src="dizi kutusu.png" alt="Dizibox API">
                 <span>Dizibox API</span>
             </a>
@@ -51,7 +51,7 @@
     </div>
 
     <div id="video-container" class="hidden">
-        <div id="api-title">Yükleniyor...</div>
+        <div id="api-title">YÜKLENİYOR...</div>
         <iframe id="api-frame" src="" allowfullscreen></iframe>
     </div>
 
