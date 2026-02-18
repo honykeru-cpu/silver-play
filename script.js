@@ -1,52 +1,47 @@
-let currentIndex = 0;
+// script.js – Silverplay Pro | YouTube API + Diğer Siteler Tarayıcıda Açılır
 
-document.addEventListener('keydown', function(e) {
-    const cards = document.querySelectorAll('.selectable');
-    const container = document.getElementById('video-container');
-    const frame = document.getElementById('api-frame');
-
-    // Eğer YouTube açıksa Geri tuşuyla kapat
-    if (container.style.display === 'block' && (e.keyCode === 10009 || e.keyCode === 27)) {
-        container.style.display = 'none';
-        frame.src = "";
-        return;
-    }
-
-    if (cards.length === 0) return;
-    cards[currentIndex].classList.remove('selected');
-
-    switch(e.keyCode) {
-        case 37: // Sol
-            if (currentIndex > 0) currentIndex--;
-            break;
-        case 39: // Sağ
-            if (currentIndex < cards.length - 1) currentIndex++;
-            break;
-        case 13: // Tamam (Enter)
-            const url = cards[currentIndex].getAttribute('href');
-            const type = cards[currentIndex].getAttribute('data-type');
-
-            if (type === "api") {
-                // YouTube'u içeride aç (Reklam engelleme için en iyi yol)
-                frame.src = url;
-                container.style.display = 'block';
-            } else {
-                // Diğerlerini normal aç
-                window.location.href = url;
-            }
-            break;
-        case 10009: // Geri (Uygulamadan çıkış)
-            if (window.tizen) tizen.application.getCurrentApplication().exit();
-            break;
-    }
-
-    cards[currentIndex].classList.add('selected');
-});
-
-// İlk odağı ver
-window.onload = () => {
+document.addEventListener('DOMContentLoaded', () => {
+    // Kumanda tuşlarını kaydet
     setTimeout(() => {
-        const first = document.querySelector('.selectable');
-        if (first) first.classList.add('selected');
-    }, 500);
-};
+        try {
+            if (tizen?.tvinputdevice) {
+                tizen.tvinputdevice.registerKeyBatch([
+                    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+                    'Enter', 'Return', 'Exit', 'Back'
+                ]);
+                console.log('Kumanda aktif.');
+            }
+        } catch (e) { console.log('Kumanda hatası:', e.message); }
+    }, 1500);
+
+    const kutular = document.querySelectorAll('.grid-container .box');
+    let aktifIndex = 0;
+    let youtubeModu = false;
+
+    function odakla(i) {
+        kutular.forEach(k => k.classList.remove('focused'));
+        if (kutular ) {
+            kutular .classList.add('focused');
+            kutular .focus();
+            aktifIndex = i;
+        }
+    }
+
+    if (kutular.length) odakla(0);
+
+    // Mouse desteği
+    kutular.forEach((kutu, i) => {
+        kutu.addEventListener('mouseover', () => odakla(i));
+        kutu.addEventListener('click', e => {
+            e.preventDefault();
+            ac(kutu.dataset.api, kutu.href, kutu.dataset.name);
+        });
+    });
+
+    // Kumanda tuşları
+    document.addEventListener('keydown', e => {
+        let handled = true;
+
+        switch (e.keyCode) {
+            case 37: if (aktifIndex > 0) odakla(aktifIndex - 1); break;
+            case 39: if (aktifIndex < kutular.length - 1) odakla(akt
