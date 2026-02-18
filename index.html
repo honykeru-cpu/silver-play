@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="cursor"></div>
+
     <div class="top-nav">
         <button class="nav-btn main-home">ANA SAYFA</button>
         <div class="auth-group">
@@ -21,41 +23,36 @@
             <div class="engine-badge">HONYKERU ENGINE v1.0</div>
             <div class="api-status">● API MODE: ACTIVE</div>
         </div>
-
+        
         <div class="grid-container">
-            <!-- YouTube – API ile açılır -->
-            <a href="#" class="box" data-api="youtube" data-name="YouTube (No-Ads)">
+            <a href="#" class="box" data-name="YouTube API" data-type="youtube">
                 <img src="youtube.png" alt="YT">
                 <span>YouTube (No-Ads)</span>
             </a>
 
-            <!-- HD Film – Tarayıcıda açılır -->
-            <a href="https://www.hdfilmcehennemi.nl/" class="box" data-api="browser" data-name="HD Film">
+            <a href="https://www.hdfilmcehennemi.nl/" class="box" data-name="HD Film API" data-type="site">
                 <img src="hdfilmcehennemi.png" alt="HF">
                 <span>HD Film</span>
             </a>
 
-            <!-- Dizipal – Tarayıcıda açılır -->
-            <a href="https://dizipal1539.com/" class="box" data-api="browser" data-name="Dizipal">
+            <a href="https://dizipal1539.com/" class="box" data-name="Dizipal API" data-type="site">
                 <img src="dizipal.png" alt="DP">
                 <span>Dizipal</span>
             </a>
 
-            <!-- Dizibox – Tarayıcıda açılır -->
-            <a href="https://www.dizibox.live/" class="box" data-api="browser" data-name="Dizibox">
+            <a href="https://www.dizibox.live/" class="box" data-name="Dizi Kutusu" data-type="site">
                 <img src="dizibox.png" alt="DB">
                 <span>Dizibox</span>
             </a>
         </div>
     </div>
 
-    <!-- YouTube için özel video oynatıcı -->
-    <div id="youtube-player" class="hidden">
+    <div id="video-container" class="hidden">
         <div class="viewer-header">
-            <span id="yt-title">YÜKLENİYOR...</span>
-            <button onclick="ytGeri()" class="close-btn">GERİ</button>
+            <span id="api-title">YÜKLENİYOR...</span>
+            <button onclick="closeAPI()" class="close-btn">KAPAT / GERİ DÖN</button>
         </div>
-        <video id="yt-video" controls autoplay></video>
+        <iframe id="api-frame" src="" sandbox="allow-forms allow-scripts allow-same-origin" allowfullscreen></iframe>
     </div>
 
     <script src="script.js"></script>
