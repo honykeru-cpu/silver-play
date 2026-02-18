@@ -1,27 +1,24 @@
-// script.js - Silverplay Pro - Son hali: YouTube Piped ile açılıyor, diğer siteler soru sormadan Samsung tarayıcısında açılıyor, geri tuşu 1 kez ana sayfa, 2 kez çıkış
+// script.js - Silverplay Pro - YouTube yewtu.be ile, diğer siteler Samsung tarayıcıda, kumanda orijinal YouTube gibi, geri tuşu 1 kez ana sayfa, 2 kez çıkış
 
 let geriSayac = 0;
 let geriTimer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Kumanda tuşlarını kaydet (gecikmeli)
+    // Kumanda tuşlarını kaydet
     setTimeout(() => {
         try {
-            if (tizen && tizen.tvinputdevice) {
+            if (tizen?.tvinputdevice) {
                 tizen.tvinputdevice.registerKeyBatch([
                     'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
                     'Enter', 'Return', 'Exit', 'Back'
                 ]);
-                console.log('Kumanda tuşları kaydedildi');
+                console.log('Kumanda aktif');
             }
-        } catch (err) {
-            console.error('Kumanda kayıt hatası:', err.message);
-        }
+        } catch (e) { console.log('Kumanda hatası:', e.message); }
     }, 1500);
 
     const kutular = document.querySelectorAll('.grid-container .box');
     let aktifIndex = 0;
-    let youtubeModu = false;
 
     function odakla(i) {
         kutular.forEach(k => k.classList.remove('focused'));
@@ -34,90 +31,87 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (kutular.length > 0) odakla(0);
 
+    // Mouse desteği
     kutular.forEach((kutu, i) => {
         kutu.addEventListener('mouseover', () => odakla(i));
         kutu.addEventListener('click', e => {
             e.preventDefault();
             const tip = kutu.dataset.type || 'site';
             const url = kutu.href;
-            const ad = kutu.dataset.name || 'Site';
+            const name = kutu.dataset.name || 'Site';
 
             if (tip === 'youtube') {
-                youtubeModu = true;
-                youtubeBaslat();
+                youtubeAc();
             } else {
-                // Diğer siteler → Samsung tarayıcıyı doğrudan aç (soru sormadan)
+                // Diğer siteler - soru sormadan Samsung tarayıcısında aç
                 try {
                     tizen.application.launchAppControl(
                         new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", null, null, null, [{name: "url", value: url}]),
                         null,
-                        () => console.log('Tarayıcı açıldı'),
-                        (err) => console.error('Tarayıcı açma hatası:', err),
+                        () => console.log('Tarayıcı açıldı: ' + url),
+                        (err) => console.error('Tarayıcı hatası:', err.message),
                         null
                     );
                 } catch (err) {
-                    console.error('Launch hatası:', err);
-                    alert('Tarayıcı açılamadı: ' + url);
+                    console.error('Launch hatası:', err.message);
                 }
             }
         });
     });
 
+    // Kumanda tuşları (orijinal YouTube gibi akıcı navigasyon)
     document.addEventListener('keydown', e => {
         let handled = true;
 
         switch (e.keyCode) {
-            case 37: if (aktifIndex > 0) odakla(aktifIndex - 1); break;
-            case 39: if (aktifIndex < kutular.length - 1) odakla(aktifIndex + 1); break;
-            case 38: if (aktifIndex >= 4) odakla(aktifIndex - 4); break;
-            case 40: if (aktifIndex + 4 < kutular.length) odakla(aktifIndex + 4); break;
-            case 13:
+            case 37: // Sol
+                if (aktifIndex > 0) odakla(aktifIndex - 1);
+                break;
+            case 39: // Sağ
+                if (aktifIndex < kutular.length - 1) odakla(aktifIndex + 1);
+                break;
+            case 38: // Yukarı
+                if (aktifIndex >= 4) odakla(aktifIndex - 4);
+                break;
+            case 40: // Aşağı
+                if (aktifIndex + 4 < kutular.length) odakla(aktifIndex + 4);
+                break;
+            case 13: // Enter
                 const kutu = kutular[aktifIndex];
                 const tip = kutu.dataset.type || 'site';
                 const url = kutu.href;
-                const ad = kutu.dataset.name;
+                const name = kutu.dataset.name;
 
                 if (tip === 'youtube') {
-                    youtubeModu = true;
-                    youtubeBaslat();
+                    youtubeAc();
                 } else {
                     try {
                         tizen.application.launchAppControl(
                             new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", null, null, null, [{name: "url", value: url}]),
                             null,
-                            () => console.log('Tarayıcı açıldı'),
-                            (err) => console.error('Tarayıcı hatası:', err),
+                            () => console.log('Tarayıcı açıldı: ' + url),
+                            (err) => console.error('Tarayıcı hatası:', err.message),
                             null
                         );
                     } catch (err) {
-                        console.error('Launch hatası:', err);
+                        console.error('Launch hatası:', err.message);
                     }
                 }
                 break;
-
-            case 10009: // Return / Back tuşu
+            case 10009: // Return / Back
             case 461:
-                if (youtubeModu) {
-                    youtubeModu = false;
-                    document.getElementById('video-container').classList.add('hidden');
-                    odakla(aktifIndex);
-                } else {
-                    geriSayac++;
-                    if (geriSayac === 1) {
-                        // 1 kez basıldı → ana sayfaya dön (iframe varsa kapat)
-                        document.getElementById('video-container').classList.add('hidden');
-                        odakla(aktifIndex);
-                        geriTimer = setTimeout(() => { geriSayac = 0; }, 800);
-                    } else if (geriSayac >= 2) {
-                        // 2 kez basıldı → uygulamadan çık
-                        clearTimeout(geriTimer);
-                        try {
-                            tizen.application.getCurrentApplication().exit();
-                        } catch {}
-                    }
+                geriSayac++;
+                if (geriSayac === 1) {
+                    // 1 kez - ana sayfaya dön
+                    closeAPI();
+                    geriTimer = setTimeout(() => { geriSayac = 0; }, 1000); // 1 sn içinde 2. basmazsa sıfırla
+                } else if (geriSayac === 2) {
+                    // 2 kez - çıkış
+                    clearTimeout(geriTimer);
+                    geriSayac = 0;
+                    tizen.application.getCurrentApplication().exit();
                 }
                 break;
-
             default:
                 handled = false;
         }
@@ -125,54 +119,61 @@ document.addEventListener('DOMContentLoaded', () => {
         if (handled) e.preventDefault();
     });
 
-    // YouTube modu başlat (trend videolar)
-    function youtubeBaslat() {
+    // YouTube - yewtu.be ile reklamsız
+    function youtubeAc() {
         const grid = document.querySelector('.grid-container');
         grid.innerHTML = '<p>Trend videolar yükleniyor...</p>';
 
-        fetch('https://pipedapi.kavin.rocks/trending')
-            .then(r => r.json())
-            .then(videolar => {
+        fetch('https://yewtu.be/feed/trending')
+            .then(r => r.text())
+            .then(data => {
+                // Yewtu.be RSS parse et (basit HTML parse)
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, "text/html");
+                const videolar = doc.querySelectorAll('.video-item');
                 grid.innerHTML = '';
                 videolar.forEach((v, i) => {
+                    const baslik = v.querySelector('a').textContent;
+                    const thumbnail = v.querySelector('img').src;
+                    const videoUrl = 'https://yewtu.be' + v.querySelector('a').href;
                     const kutu = document.createElement('div');
                     kutu.className = 'video-kutu';
                     kutu.innerHTML = `
-                        <img src="${v.thumbnail}" alt="${v.title}">
-                        <span>${v.title}</span>
+                        <img src="${thumbnail}" alt="${baslik}">
+                        <span>${baslik}</span>
                     `;
-                    kutu.onclick = () => oynat(v);
+                    kutu.onclick = () => oynat(videoUrl, baslik);
                     grid.appendChild(kutu);
                 });
                 odakla(0);
             })
             .catch(err => {
-                grid.innerHTML = '<p>Videolar yüklenemedi</p>';
+                grid.innerHTML = '<p>Hata: Videolar yüklenemedi</p>';
                 console.error(err);
             });
     }
 
-    function oynat(video) {
+    function oynat(url, baslik) {
         const title = document.getElementById('api-title');
         const frame = document.getElementById('api-frame');
         const container = document.getElementById('video-container');
 
-        title.textContent = video.title;
-        frame.src = `https://piped.kavin.rocks/embed/${video.url.split('v=')[1]}`;
+        title.textContent = baslik;
+        frame.src = url;
         container.classList.remove('hidden');
         frame.focus();
     }
 
-    // Eski iframe fonksiyonları
-    window.openAPI = (url, title) => {
-        document.getElementById('api-title').textContent = title || 'YÜKLENİYOR...';
-        document.getElementById('api-frame').src = url;
-        document.getElementById('video-container').classList.remove('hidden');
-    };
-
+    // Iframe kapat
     window.closeAPI = () => {
         document.getElementById('api-frame').src = '';
         document.getElementById('video-container').classList.add('hidden');
         odakla(aktifIndex);
     };
+
+    // Ana sayfa butonu
+    document.querySelector('.main-home').addEventListener('click', () => {
+        closeAPI();
+        odakla(0);
+    });
 });
