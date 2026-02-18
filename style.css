@@ -1,72 +1,112 @@
-/* Silverplay Pro - Orijinal Mor Tema */
-body.bg-purple {
-    background: radial-gradient(circle, #2e004f 0%, #000000 100%); /* Mor/Siyah geçişli arka plan */
+body {
     margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    /* Arka plana bg.png dosyasını yüklemeyi unutma */
+    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('bg.png');
+    background-size: cover;
+    background-position: center;
+    font-family: 'Segoe UI', sans-serif;
     overflow: hidden;
-    cursor: none !important; /* Fare imlecini gizler */
+    cursor: none;
 }
 
-.container {
+/* İmleç */
+#cursor {
+    position: fixed;
+    width: 28px;
+    height: 28px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="turquoise" stroke="white" stroke-width="1.5"><path d="M7 2l12 11.01h-7v6.99z"/></svg>') no-repeat;
+    pointer-events: none;
+    z-index: 99999;
+}
+
+/* Navigasyon */
+.top-nav {
+    position: absolute;
+    top: 40px;
     width: 90%;
-    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
 }
 
+.nav-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.main-home { font-size: 22px; border-color: turquoise; }
+
+/* Başlık ve Logo */
 .main-title {
-    text-align: center;
-    font-size: 3rem;
-    letter-spacing: 5px;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-    margin-top: 0;
+    color: white;
+    font-size: 110px;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -3px;
+    text-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
 }
 
-/* Kutu Izgara Düzeni (Grid) */
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 yan yana kutu */
-    gap: 25px;
-    padding: 20px;
-}
+.pro-text { color: #00d4ff; font-weight: 200; }
 
-/* Kutuların Ana Hali */
+.engine-badge { color: rgba(255,255,255,0.4); letter-spacing: 6px; text-align: center; }
+
+.api-status { color: #00ff88; font-size: 14px; font-weight: bold; text-align: center; margin-top: 10px; }
+
+/* Kutular */
+.grid-container { display: flex; gap: 25px; margin-top: 50px; }
+
 .box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 25px;
+    width: 160px;
     text-decoration: none;
     color: white;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
-.box img {
-    width: 100%;
-    max-width: 150px;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 15px;
+.box:hover, .box.selected {
+    border-color: #00d4ff;
+    background: rgba(0, 212, 255, 0.2);
+    transform: scale(1.1);
 }
 
-.box span {
-    font-size: 1.1rem;
-    font-weight: bold;
+.box img { width: 70px; height: 70px; margin-bottom: 15px; }
+
+/* API İzleyici Stilleri */
+#video-container {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: black; z-index: 100000;
 }
 
-/* KUMANDA İLE SEÇİLDİĞİNDE (YouTube Tarzı Parlama) */
-/* script.js 'selectable' yerine 'selected' sınıfını eklerse burası çalışır */
-.box.selected {
-    border: 5px solid #ff00ea !important; /* Parlak Mor/Pembe çerçeve */
-    background: rgba(255, 0, 234, 0.1);
-    transform: scale(1.1); /* Kutuyu büyütür */
-    box-shadow: 0 0 30px rgba(255, 0, 234, 0.6);
-    z-index: 10;
+.viewer-header {
+    height: 60px; background: #111;
+    display: flex; justify-content: space-between;
+    align-items: center; padding: 0 30px;
+    border-bottom: 2px solid turquoise;
 }
+
+#api-title { color: white; font-weight: bold; }
+
+.close-btn {
+    background: #ff4444; color: white; border: none;
+    padding: 10px 20px; border-radius: 5px; cursor: pointer;
+}
+
+#api-frame { width: 100%; height: calc(100% - 60px); border: none; }
+
+.hidden { display: none !important; }
