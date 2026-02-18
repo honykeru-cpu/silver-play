@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Silver Play API Launcher</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Bu kısım sabahki gizli pencere ayarıdır, tasarımı bozmaz */
+        #api-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 9999; display: none;
+        }
+        #api-container.active { display: block; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
 </head>
 <body class="bg-purple">
 
@@ -35,6 +44,10 @@
                 <span>Dizibox API</span>
             </a>
         </div>
+    </div>
+
+    <div id="api-container">
+        <iframe id="api-frame" src="" allowfullscreen></iframe>
     </div>
 
     <script src="script.js"></script>
