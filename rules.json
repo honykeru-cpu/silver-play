@@ -1,29 +1,46 @@
-// Seçili butonu takip et
-let currentIndex = 0;
+const cursor = document.getElementById('cursor');
+const videoContainer = document.getElementById('video-container');
+const apiFrame = document.getElementById('api-frame');
+const apiTitle = document.getElementById('api-title');
 const boxes = document.querySelectorAll('.box');
 
-// İlk kutuyu otomatik seç
-if(boxes.length > 0) boxes[0].classList.add('selected');
-
-// Kumanda veya Klavye Kontrolü
-document.addEventListener('keydown', function(e) {
-    boxes[currentIndex].classList.remove('selected');
-
-    if (e.keyCode === 39) { // SAĞ
-        currentIndex = (currentIndex + 1) % boxes.length;
-    } else if (e.keyCode === 37) { // SOL
-        currentIndex = (currentIndex - 1 + boxes.length) % boxes.length;
-    } else if (e.keyCode === 13) { // OK / ENTER (Tıklama)
-        const url = boxes[currentIndex].getAttribute('href');
-        if(url !== "#") window.location.href = url;
-    }
-
-    boxes[currentIndex].classList.add('selected');
-});
-
-// Fare imleci hareketi (Daha önce konuştuğumuz o küçük ok)
-const cursor = document.getElementById('cursor');
+// 1. İmleç Hareketi
 document.addEventListener('mousemove', (e) => {
     cursor.style.left = e.clientX + 'px';
     cursor.style.top = e.clientY + 'px';
+});
+
+// 2. Tıklama ve API Açma
+boxes.forEach(box => {
+    box.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = this.getAttribute('href');
+        const name = this.getAttribute('data-name');
+        openAPI(url, name);
+    });
+});
+
+function openAPI(url, name) {
+    apiTitle.innerText = name + " OYNATILIYOR...";
+    apiFrame.src = url;
+    videoContainer.classList.remove('hidden');
+    cursor.style.display = 'none'; // Video izlerken imleci gizle
+}
+
+function closeAPI() {
+    videoContainer.classList.add('hidden');
+    apiFrame.src = ""; // Yayını ve sesi tamamen kes
+    cursor.style.display = 'block';
+}
+
+// 3. Klavye / Kumanda Desteği
+let currentIndex = 0;
+document.addEventListener('keydown', (e) => {
+    if (!videoContainer.classList.contains('hidden')) return; // API açıkken menü kontrolünü kapat
+
+    boxes[currentIndex].classList.remove('selected');
+    if (e.keyCode === 39) currentIndex = (currentIndex + 1) % boxes.length;
+    else if (e.keyCode === 37) currentIndex = (currentIndex - 1 + boxes.length) % boxes.length;
+    else if (e.keyCode === 13) boxes[currentIndex].click();
+    boxes[currentIndex].classList.add('selected');
 });
