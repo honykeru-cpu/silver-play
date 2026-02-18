@@ -2,26 +2,48 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Silverplay Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="cursor"></div>
 
-    <div style="position: absolute; top: 30px; right: 50px;">
-        <button class="btn">GİRİŞ YAP</button>
-        <button class="btn" style="background: #00d4ff;">HEMEN ÜYE OL</button>
+    <div class="top-nav">
+        <button class="nav-btn main-home">ANA SAYFA</button>
+        <div class="auth-group">
+            <button class="nav-btn login">GİRİŞ YAP</button>
+            <button class="nav-btn register">HEMEN ÜÜE OL</button>
+        </div>
     </div>
 
     <div class="container">
-        <h1 class="main-title">SILVERPLAY <span style="font-weight: 100;">PRO</span></h1>
-        <p class="engine-text">HONYKERU ENGINE v1.0</p>
+        <div class="header-section">
+            <h1 class="main-title">SILVERPLAY <span class="pro-text">PRO</span></h1>
+            <div class="engine-badge">HONYKERU ENGINE v1.0</div>
+            <div class="api-status">● API MODE: ACTIVE</div>
+        </div>
         
         <div class="grid-container">
-            <a href="#" class="box"><img src="youtube.png"><div>Youtube API</div></a>
-            <a href="#" class="box"><img src="dizipal.png"><div>Dizipal</div></a>
-            <a href="#" class="box"><img src="hdfilmcehennemi.png"><div>HD Film</div></a>
-            <a href="#" class="box"><img src="dizibox.png"><div>Dizi Kutusu</div></a>
+            <a href="https://yewtu.be" class="box">
+                <img src="youtube.png" alt="YT">
+                <span>Youtube API</span>
+            </a>
+
+            <a href="https://piped.video" class="box">
+                <img src="dizipal.png" alt="DP">
+                <span>Dizipal API</span>
+            </a>
+
+            <a href="https://vidsrc.to/embed/movie/tt0111161" class="box">
+                <img src="hdfilmcehennemi.png" alt="HF">
+                <span>HD Film API</span>
+            </a>
+
+            <a href="https://movie-web.app" class="box">
+                <img src="dizibox.png" alt="DB">
+                <span>Dizi Kutusu</span>
+            </a>
         </div>
     </div>
 
