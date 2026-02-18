@@ -132,3 +132,116 @@ body {
 .video-kutu span { display: block; margin-top: 5px; font-size: 14px; }
 #youtube-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; }
 #yt-video { width: 100%; height: 90vh; }
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #0d0d0d;
+    color: #fff;
+}
+
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #111;
+}
+
+.nav-btn {
+    background: #222;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.container {
+    padding: 20px;
+    text-align: center;
+}
+
+.main-title {
+    font-size: 3em;
+    margin: 0;
+}
+
+.pro-text {
+    color: #00ffea;
+}
+
+.engine-badge, .api-status {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.box {
+    background: #222;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+.box img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.box span {
+    display: block;
+    padding: 10px;
+    font-size: 1.1em;
+}
+
+.box.focused {
+    outline: 5px solid #00ffea;
+    transform: scale(1.08);
+    box-shadow: 0 0 25px #00ffea80;
+}
+
+#video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 1000;
+}
+
+.viewer-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background: #111;
+}
+
+.close-btn {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#api-frame {
+    width: 100%;
+    height: calc(100% - 60px);
+    border: none;
+}
+
+.hidden {
+    display: none !important;
+}
