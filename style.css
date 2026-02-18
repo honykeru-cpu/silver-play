@@ -12,6 +12,14 @@ body {
     overflow: hidden;
     cursor: none;
 }
+/* Seçili kutunun etrafına mavi bir çerçeve ve parlama ekler */
+.card.selected {
+    border: 5px solid #007bff !important;
+    transform: scale(1.1); /* Kutuyu hafif büyütür */
+    transition: 0.3s;
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+    z-index: 10;
+}
 
 /* İmleç */
 #cursor {
