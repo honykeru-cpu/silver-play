@@ -1,0 +1,15 @@
+/* Ekrandaki sanal fare imleci */
+#virtual-cursor {
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #9933ff;
+    border-radius: 50%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 9999; /* Her şeyin en üstünde görünsün */
+    pointer-events: none; /* İmlecin kendisi tıklamalara engel olmasın */
+    transition: transform 0.1s ease-out;
+    box-shadow: 0 0 10px #9933ff;
+}
