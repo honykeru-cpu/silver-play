@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silverplay Pro</title>
+    <title>Silverplay Pro - V1.0</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,11 +13,11 @@
         <button class="nav-btn main-home">ANA SAYFA</button>
         <div class="auth-group">
             <button class="nav-btn login">GİRİŞ YAP</button>
-            <button class="nav-btn register">HEMEN ÜÜE OL</button>
+            <button class="nav-btn register">HEMEN ÜYE OL</button>
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="main-ui">
         <div class="header-section">
             <h1 class="main-title">SILVERPLAY <span class="pro-text">PRO</span></h1>
             <div class="engine-badge">HONYKERU ENGINE v1.0</div>
@@ -25,26 +25,34 @@
         </div>
         
         <div class="grid-container">
-            <a href="https://yewtu.be" class="box">
+            <a href="https://yewtu.be" class="box" data-name="Youtube API">
                 <img src="youtube.png" alt="YT">
                 <span>Youtube API</span>
             </a>
 
-            <a href="https://piped.video" class="box">
+            <a href="https://piped.video" class="box" data-name="Dizipal API">
                 <img src="dizipal.png" alt="DP">
                 <span>Dizipal API</span>
             </a>
 
-            <a href="https://vidsrc.to/embed/movie/tt0111161" class="box">
+            <a href="https://vidsrc.to/embed/movie/tt0111161" class="box" data-name="HD Film API">
                 <img src="hdfilmcehennemi.png" alt="HF">
                 <span>HD Film API</span>
             </a>
 
-            <a href="https://movie-web.app" class="box">
+            <a href="https://movie-web.app" class="box" data-name="Dizi Kutusu">
                 <img src="dizibox.png" alt="DB">
                 <span>Dizi Kutusu</span>
             </a>
         </div>
+    </div>
+
+    <div id="video-container" class="hidden">
+        <div class="viewer-header">
+            <span id="api-title">YÜKLENİYOR...</span>
+            <button onclick="closeAPI()" class="close-btn">KAPAT / GERİ DÖN</button>
+        </div>
+        <iframe id="api-frame" src="" sandbox="allow-forms allow-scripts allow-same-origin" allowfullscreen></iframe>
     </div>
 
     <script src="script.js"></script>
