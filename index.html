@@ -3,144 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silver Play Pro</title>
+    <title>Silver Play Pro - HBO Edition</title>
     <style>
-        /* HBO MAX TEMASI */
+        /* HBO MAX RENK PALETİ VE GRADYANLARI */
         :root {
             --hbo-bg: radial-gradient(circle at center, #1d1042 0%, #000000 100%);
             --hbo-purple: #9933ff;
-            --card-bg: #111;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --text-color: #ffffff;
         }
 
         body { 
-            margin: 0; background: var(--hbo-bg); color: white; 
-            font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; 
+            margin: 0; background: var(--hbo-bg); color: var(--text-color); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; height: 100vh;
         }
 
-        h1 { text-align: center; margin-top: 30px; letter-spacing: 5px; font-weight: 200; }
+        h1 {
+            text-align: center; margin-top: 40px; font-weight: 200;
+            letter-spacing: 8px; text-transform: uppercase;
+            background: linear-gradient(to right, #fff, var(--hbo-purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
 
         .container { 
             display: flex; justify-content: center; align-items: center; 
-            height: 70vh; gap: 20px; padding: 0 40px; flex-wrap: wrap;
+            height: 65vh; gap: 25px; padding: 0 50px;
         }
 
-        /* KARTLAR */
+        /* HBO STİLİ KARTLAR */
         .site-card { 
-            width: 240px; height: 140px; background: var(--card-bg); 
-            border-radius: 10px; display: flex; flex-direction: column;
+            width: 260px; height: 160px; background: var(--card-bg); 
+            border-radius: 12px; display: flex; flex-direction: column;
             justify-content: center; align-items: center; cursor: pointer; 
-            border: 2px solid #333; transition: 0.3s; outline: none;
+            border: 2px solid #333; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; outline: none;
         }
 
+        /* KUMANDA ODAKLANMA EFEKTİ */
         .site-card:focus, .site-card:hover { 
-            transform: scale(1.1); border-color: white;
-            box-shadow: 0 0 20px var(--hbo-purple);
+            transform: scale(1.15); border-color: #fff;
+            box-shadow: 0 0 40px rgba(153, 51, 255, 0.7);
+            z-index: 10; background: #1a1a1a;
         }
 
-        .site-card img { width: 80px; height: 50px; object-fit: contain; margin-bottom: 10px; }
-
-        /* SANAL MOUSE İMLECİ */
-        #virtual-cursor {
-            width: 25px; height: 25px; background: rgba(255, 255, 255, 0.5);
-            border: 2px solid var(--hbo-purple); border-radius: 50%;
-            position: fixed; top: 50%; left: 50%; z-index: 9999;
-            pointer-events: none; display: none; /* Sadece kumanda ile hareket edince görünür */
-        }
-
-        /* TARAYICI ALANI */
-        #browser-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: black; }
-        iframe { width: 100%; height: 100%; border: none; }
-    </style>
-</head>
-<body>
-
-    <div id="virtual-cursor"></div>
-    <h1>SILVER PLAY</h1>
-
-    <div id="menu" class="container">
-        <div class="site-card" tabindex="1" data-url="https://www.youtube.com/tv">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png"><p>YOUTUBE</p>
-        </div>
-        <div class="site-card" tabindex="2" data-url="https://dizipal.com">
-            <img src="https://via.placeholder.com/150/FFD700/000000?text=DIZIPAL"><p>DIZIPAL</p>
-        </div>
-        <div class="site-card" tabindex="3" data-url="https://hdfilmcehennemi.com">
-            <img src="https://via.placeholder.com/150/00E0FF/000000?text=HDFILM"><p>HD FILM</p>
-        </div>
-        <div class="site-card" tabindex="4" data-url="https://dizibox.com">
-            <img src="https://via.placeholder.com/150/E50914/FFFFFF?text=DIZIBOX"><p>DIZIBOX</p>
-        </div>
-    </div>
-
-    <div id="browser-container">
-        <iframe id="target-frame" src=""></iframe>
-    </div>
-
-    <script>
-        const cursor = document.getElementById('virtual-cursor');
-        const frame = document.getElementById('target-frame');
-        const container = document.getElementById('browser-container');
-        const menu = document.getElementById('menu');
-
-        let cX = window.innerWidth / 2;
-        let cY = window.innerHeight / 2;
-        const speed = 25;
-
-        // 1. REKLAM ENGELLEYİCİ (Ad-Blocker - *Reklam Engelleyici*)
-        function startAdBlock() {
-            setInterval(() => {
-                try {
-                    const adRules = ".ad-container, .ytp-ad-overlay, .video-ads, iframe[src*='ads'], #popunder, .ad-banner";
-                    const style = document.createElement('style');
-                    style.innerHTML = adRules + " { display: none !important; pointer-events: none !important; }";
-                    frame.contentDocument.head.appendChild(style);
-                } catch (e) { /* Güvenlik kısıtlaması olursa atla */ }
-            }, 1000);
-        }
-
-        // 2. KUMANDA VE MOUSE KONTROLLERİ (Controls - *Kontroller*)
-        document.addEventListener('keydown', (e) => {
-            cursor.style.display = 'block'; // Kumanda basılınca imleci göster
-
-            switch(e.keyCode) {
-                case 37: cX -= speed; break; // Sol
-                case 38: cY -= speed; break; // Yukarı
-                case 39: cX += speed; break; // Sağ
-                case 40: cY += speed; break; // Aşağı
-                case 13: // Enter (Tıklama - *Tıklama*)
-                    const el = document.elementFromPoint(cX, cY);
-                    if (el) el.click();
-                    break;
-                case 10009: // Tizen Geri Tuşu (Back - *Geri*)
-                    if (container.style.display === 'block') {
-                        container.style.display = 'none';
-                        menu.style.display = 'flex';
-                        frame.src = "";
-                    }
-                    break;
-            }
-            cursor.style.left = cX + 'px';
-            cursor.style.top = cY + 'px';
-        });
-
-        // 3. KABLOSUZ MOUSE DESTEĞİ (Wireless Mouse - *Kablosuz Fare*)
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.display = 'none'; // Gerçek mouse varsa sanal imleci gizle
-        });
-
-        // SİTE AÇMA FONKSİYONU
-        document.querySelectorAll('.site-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const url = card.dataset.url;
-                menu.style.display = 'none';
-                container.style.display = 'block';
-                frame.src = url;
-                startAdBlock();
-            });
-        });
-
-        // İlk kartı seç
-        document.querySelector('.site-card').focus();
-    </script>
-</body>
-</html>
+        /* LOGO AYARLARI */
+        .site-card img {
