@@ -1,46 +1,24 @@
-const cursor = document.getElementById('cursor');
-const videoContainer = document.getElementById('video-container');
-const apiFrame = document.getElementById('api-frame');
-const apiTitle = document.getElementById('api-title');
-const boxes = document.querySelectorAll('.box');
-
-// 1. İmleç Hareketi
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-});
-
-// 2. Tıklama ve API Açma
-boxes.forEach(box => {
-    box.addEventListener('click', function(e) {
-        e.preventDefault();
-        const url = this.getAttribute('href');
-        const name = this.getAttribute('data-name');
-        openAPI(url, name);
-    });
-});
-
-function openAPI(url, name) {
-    apiTitle.innerText = name + " OYNATILIYOR...";
-    apiFrame.src = url;
-    videoContainer.classList.remove('hidden');
-    cursor.style.display = 'none'; // Video izlerken imleci gizle
-}
-
-function closeAPI() {
-    videoContainer.classList.add('hidden');
-    apiFrame.src = ""; // Yayını ve sesi tamamen kes
-    cursor.style.display = 'block';
-}
-
-// 3. Klavye / Kumanda Desteği
-let currentIndex = 0;
-document.addEventListener('keydown', (e) => {
-    if (!videoContainer.classList.contains('hidden')) return; // API açıkken menü kontrolünü kapat
-
-    boxes[currentIndex].classList.remove('selected');
-    if (e.keyCode === 39) currentIndex = (currentIndex + 1) % boxes.length;
-    else if (e.keyCode === 37) currentIndex = (currentIndex - 1 + boxes.length) % boxes.length;
-    else if (e.keyCode === 13) boxes[currentIndex].click();
-    boxes[currentIndex].classList.add('selected');
+// Tizen Kumanda Tuşlarını Tanımlama (Remote Key Mapping - Uzaktan Kumanda Tuş Eşlemesi)
+document.addEventListener('keydown', function(e) {
+    console.log("Basılan Tuş Kodu: " + e.keyCode);
+    
+    switch(e.keyCode) {
+        case 37: // Sol (Left)
+            // Sol tuş fonksiyonunu buraya çağır
+            break;
+        case 38: // Yukarı (Up)
+            break;
+        case 39: // Sağ (Right)
+            // Sağ tuş fonksiyonunu buraya çağır
+            break;
+        case 40: // Aşağı (Down)
+            break;
+        case 13: // Tamam (Enter/OK)
+            // Seçili olanı açma fonksiyonu
+            break;
+        case 10009: // Geri (Return/Back)
+            // Uygulamadan çıkmak veya geri gelmek için
+            tizen.application.getCurrentApplication().hide(); 
+            break;
+    }
 });
