@@ -8,11 +8,13 @@
 <body>
     <div class="container">
         <div class="logo-box" id="logo-home">
-            <span class="text-silver">SILVER</span>
-            <div class="triangle-play"><span class="text-play">PLAY</span></div>
-            <span class="text-pro">PRO</span>
+            <span class="silver-text">SILVER</span>
+            <div class="play-box"><span class="play-text">PLAY</span></div>
+            <span class="pro-text">PRO</span>
         </div>
         
+        <p style="color: white; opacity: 0.8; margin-top: -20px;">API Mode: Active (No-Ads)</p>
+
         <div class="grid-container">
             <a href="https://yewtu.be/trending" class="box selectable" data-type="internal">
                 <img src="youtube.png" alt="YouTube">
@@ -32,7 +34,11 @@
             </a>
         </div>
     </div>
-    <div id="yt-layer"><iframe id="yt-frame" src="" allowfullscreen="true"></iframe></div>
+
+    <div id="yt-layer">
+        <iframe id="yt-frame" src="" allowfullscreen="true"></iframe>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
