@@ -3,49 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silver Play Pro - HBO Edition</title>
-    <style>
-        /* HBO MAX RENK PALETİ VE GRADYANLARI */
-        :root {
-            --hbo-bg: radial-gradient(circle at center, #1d1042 0%, #000000 100%);
-            --hbo-purple: #9933ff;
-            --card-bg: rgba(20, 20, 20, 0.8);
-            --text-color: #ffffff;
-        }
-
-        body { 
-            margin: 0; background: var(--hbo-bg); color: var(--text-color); 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; height: 100vh;
-        }
-
-        h1 {
-            text-align: center; margin-top: 40px; font-weight: 200;
-            letter-spacing: 8px; text-transform: uppercase;
-            background: linear-gradient(to right, #fff, var(--hbo-purple));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .container { 
-            display: flex; justify-content: center; align-items: center; 
-            height: 65vh; gap: 25px; padding: 0 50px;
-        }
-
-        /* HBO STİLİ KARTLAR */
-        .site-card { 
-            width: 260px; height: 160px; background: var(--card-bg); 
-            border-radius: 12px; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; cursor: pointer; 
-            border: 2px solid #333; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative; outline: none;
-        }
-
-        /* KUMANDA ODAKLANMA EFEKTİ */
-        .site-card:focus, .site-card:hover { 
-            transform: scale(1.15); border-color: #fff;
-            box-shadow: 0 0 40px rgba(153, 51, 255, 0.7);
-            z-index: 10; background: #1a1a1a;
-        }
-
-        /* LOGO AYARLARI */
-        .site-card img {
+    <title>Silver Play Launcher</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="cursor"></div> <div class="main-container">
+        <h1 class="title">SILVER PLAY PRO</h1>
+        <div class="menu-grid">
+            <a href="https://www.youtube.com" class="item selectable">
+                <div class="icon-box"><img src="assets/youtube.png"></div>
+                <span>YouTube</span>
+            </a>
+            <a href="https://www.dizipal.com" class="item selectable">
+                <div class="icon-box"><img src="assets/dizipal.png"></div>
+                <span>Dizipal</span>
+            </a>
+            <a href="https://www.hdfilmcehennemi.com" class="item selectable">
+                <div class="icon-box"><img src="assets/hdfilm.png"></div>
+                <span>HD Film</span>
+            </a>
+            <a href="https://www.dizibox.com" class="item selectable">
+                <div class="icon-box"><img src="assets/dizibox.png"></div>
+                <span>Dizibox</span>
+            </a>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
