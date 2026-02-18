@@ -1,58 +1,42 @@
-let currentPos = 0;
-let backPressCount = 0;
-let backTimer;
+let currentIdx = 0;
+let backPress = 0;
+let timer;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const items = document.querySelectorAll('.selectable');
-    const ytLayer = document.getElementById('yt-layer');
-    const ytFrame = document.getElementById('yt-frame');
+    const cards = document.querySelectorAll('.selectable');
+    const layer = document.getElementById('yt-layer');
+    const frame = document.getElementById('yt-frame');
 
-    function setFocus(idx) {
-        items.forEach(item => item.classList.remove('selected'));
-        if (items[idx]) {
-            items[idx].classList.add('selected');
-            currentPos = idx;
-        }
+    function updateFocus(idx) {
+        cards.forEach(c => c.classList.remove('selected'));
+        if (cards[idx]) { cards[idx].classList.add('selected'); currentIdx = idx; }
     }
-
-    setFocus(0);
+    updateFocus(0);
 
     document.addEventListener('keydown', (e) => {
         switch(e.keyCode) {
-            case 37: if (currentPos > 0) setFocus(currentPos - 1); break;
-            case 39: if (currentPos < items.length - 1) setFocus(currentPos + 1); break;
-            case 13: // Enter
-                const link = items[currentPos].getAttribute('href');
-                if (items[currentPos].getAttribute('data-type') === "internal") {
-                    e.preventDefault();
-                    ytLayer.style.display = 'block';
-                    ytFrame.src = link;
+            case 37: if (currentIdx > 0) updateFocus(currentIdx - 1); break;
+            case 39: if (currentIdx < cards.length - 1) updateFocus(currentIdx + 1); break;
+            case 13: 
+                const link = cards[currentIdx].getAttribute('href');
+                if (cards[currentIdx].getAttribute('data-type') === "internal") {
+                    layer.style.display = 'block'; frame.src = link;
                 } else {
                     if (window.tizen) {
-                        try {
-                            const control = new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", link);
-                            tizen.application.launchAppControl(control, "org.tizen.browser", null, null);
-                        } catch(i) { window.location.href = link; }
+                        const control = new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", link);
+                        tizen.application.launchAppControl(control, "org.tizen.browser", null, null);
                     } else { window.open(link, '_blank'); }
                 }
                 break;
-            case 10009: // Return
-                if (ytLayer.style.display === 'block') {
-                    ytLayer.style.display = 'none';
-                    ytFrame.src = "";
-                } else {
-                    backPressCount++;
-                    setFocus(0);
-                    if (backPressCount === 1) {
-                        backTimer = setTimeout(() => { backPressCount = 0; }, 1500);
-                    } else if (backPressCount === 2) {
-                        clearTimeout(backTimer);
-                        if (window.tizen) tizen.application.getCurrentApplication().exit();
-                    }
+            case 10009: 
+                if (layer.style.display === 'block') { layer.style.display = 'none'; frame.src = ""; } 
+                else {
+                    backPress++; updateFocus(0); // Tek basış başa atar
+                    if (backPress === 1) { timer = setTimeout(() => { backPress = 0; }, 1500); } 
+                    else if (backPress === 2) { if (window.tizen) tizen.application.getCurrentApplication().exit(); }
                 }
                 break;
         }
     });
-
     document.getElementById('logo-home').addEventListener('click', () => { window.location.reload(); });
 });
