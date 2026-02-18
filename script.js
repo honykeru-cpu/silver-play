@@ -1,56 +1,55 @@
-// Tizen Remote and Mouse Integration (Kumanda ve Fare Entegrasyonu)
+// main.js - Samsung Tizen TV için temel uygulama (kumanda çalışır)
 
-let currentIndex = 0;
-const cards = document.querySelectorAll('.card');
+// Önce gerekli privilege'ları config.xml'de eklemeyi unutma:
+// <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
 
-// 1. Seçimi Güncelleme Fonksiyonu (Selection Update)
-function updateSelection(index) {
-    if (cards.length === 0) return;
-    
-    // Eski seçimi kaldır
-    cards.forEach(card => card.classList.remove('selected'));
-    
-    // Yeni seçimi ekle
-    currentIndex = index;
-    if (cards[currentIndex]) {
-        cards[currentIndex].classList.add('selected');
-        // YouTube tarzı otomatik kaydırma (Scroll)
-        cards[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-    }
-}
+// Tuşları kaydet (app açıldığında çalışır)
+window.onload = function() {
+    // Kumanda tuşlarını aktif et
+    tizen.tvinputdevice.registerKeyBatch([
+        'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 
+        'Enter', 'Exit', 'Back', 'ColorF1Red', 'ColorF2Green', 'ColorF3Yellow', 'ColorF4Blue'
+    ]);
 
-// 2. Kumanda Tuş Kontrolü (Remote Control Logic)
-document.addEventListener('keydown', function(e) {
-    // Tuş kodlarını konsola yazar (Hata ayıklama için)
-    console.log("Tuş Basıldı: " + e.keyCode);
+    console.log("Kumanda tuşları aktif! Artık ok, Enter, Back çalışıyor.");
 
-    switch(e.keyCode) {
-        case 37: // Sol (Left)
-            if (currentIndex > 0) updateSelection(currentIndex - 1);
-            break;
-        case 39: // Sağ (Right)
-            if (currentIndex < cards.length - 1) updateSelection(currentIndex + 1);
-            break;
-        case 13: // Tamam (Enter/OK)
-            if (cards[currentIndex]) cards[currentIndex].click();
-            break;
-        case 10009: // Geri (Return/Back)
-            if (window.tizen) tizen.application.getCurrentApplication().hide();
-            break;
-    }
-});
+    // Ekranı hazırla (örnek bir mesaj)
+    document.body.innerHTML = `
+        <h1 style="color:white; text-align:center; margin-top:20vh;">
+            Hoş geldin! Kumanda ile oynayabilirsin<br>
+            Yukarı / Aşağı / Enter / Geri
+        </h1>
+        <p id="status" style="color:#00ff00; text-align:center; font-size:1.5em;">
+            Şu an hiçbir tuşa basılmadı...
+        </p>
+    `;
 
-// 3. Mouse/Fare Uyumu (Mouse Hover Support)
-// Mouse bir kutunun üzerine geldiğinde kumanda odağını oraya taşır
-cards.forEach((card, index) => {
-    card.addEventListener('mouseenter', () => {
-        updateSelection(index);
+    // Tuş olaylarını dinle
+    document.addEventListener('keydown', function(e) {
+        const status = document.getElementById('status');
+        
+        switch(e.keyCode) {
+            case 37: // Sol
+                status.innerText = "Sol tuşuna bastın!";
+                break;
+            case 38: // Yukarı
+                status.innerText = "Yukarı tuşuna bastın!";
+                break;
+            case 39: // Sağ
+                status.innerText = "Sağ tuşuna bastın!";
+                break;
+            case 40: // Aşağı
+                status.innerText = "Aşağı tuşuna bastın!";
+                break;
+            case 13: // Enter
+                status.innerText = "Enter'a bastın! (Seçildi)";
+                break;
+            case 10009: // Exit / Back tuşu (Tizen'de 10009)
+                status.innerText = "Geri tuşuna bastın!";
+                tizen.application.getCurrentApplication().exit(); // App'i kapat
+                break;
+            default:
+                status.innerText = "Bilinmeyen tuş: " + e.keyCode;
+        }
     });
-});
-
-// 4. Sayfa Açıldığında İlk Kutuyu Seç (Auto Focus)
-window.onload = () => {
-    if (cards.length > 0) {
-        setTimeout(() => updateSelection(0), 500);
-    }
 };
