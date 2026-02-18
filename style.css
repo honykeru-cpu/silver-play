@@ -1,38 +1,15 @@
-/* 1. Genel Sayfa Ayarları (General Settings) */
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #000; /* Arka planı siyah yapar */
-    overflow: hidden; /* Sayfanın gereksiz kaymasını engeller */
-    cursor: none !important; /* Fare imlecini tamamen gizler - Cursor Hidden */
-}
+/* SENİN ESKİ CSS KODLARIN BURADAN DEVAM EDİYOR (Hiçbirini silme) */
 
-/* 2. Kutu/Kart Tasarımı (Card Design) */
-.card {
-    display: inline-block;
-    width: 250px; /* Kutu genişliği */
-    height: 150px; /* Kutu yüksekliği */
-    margin: 20px;
-    background-color: #1a1a1a;
-    border-radius: 10px;
-    border: 4px solid transparent; /* Seçilmediğinde kenarlık görünmez */
-    transition: all 0.3s ease; /* Hareketlerin yumuşak olması için - Transition */
-    position: relative;
-}
-
-/* 3. YouTube Tarzı Seçili Kutu Efekti (Selected/Focus State) */
-/* Kumanda veya Mouse ile bir kutunun üzerine gelindiğinde burası çalışır */
+/* Kumanda ile üzerine gelinen kutunun parlaması için bunu en alta ekle: */
 .card.selected {
-    border: 6px solid #ff0000 !important; /* Canlı kırmızı çerçeve */
-    transform: scale(1.1); /* Kutuyu %10 büyütür - Scale */
-    box-shadow: 0 0 30px rgba(255, 0, 0, 0.8); /* Parlama efekti - Glow */
-    z-index: 100; /* Diğer kutuların önünde görünmesi için */
+    outline: 6px solid #ff0000 !important; /* Çerçeve yerine dış çizgi (Layout bozmaz) */
+    transform: scale(1.05); /* Çok hafif büyütme */
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
+    transition: all 0.2s ease;
+    z-index: 999;
 }
 
-/* 4. Resim Ayarları (Image Settings) */
-.card img {
-    width: 100%;
-    height: 100%;
-    border-radius: 6px;
-    object-fit: cover;
+/* Mouse imlecini gizlemek istersen (isteğe bağlı): */
+body {
+    cursor: none !important;
 }
