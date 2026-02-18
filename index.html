@@ -3,51 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silver Play API Launcher</title>
+    <title>Silverplay Pro - V1.0</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Sadece YouTube için kullanılacak gizli pencere */
-        #video-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; z-index: 9999; display: none;
-        }
-        #video-container.active { display: block; }
-        iframe { width: 100%; height: 100%; border: none; }
-    </style>
 </head>
-<body class="bg-purple">
+<body>
+    <div class="top-nav">
+        <button class="nav-btn main-home">ANA SAYFA</button>
+        <div class="auth-group">
+            <button class="nav-btn login">GİRİŞ YAP</button>
+            <button class="nav-btn register">HEMEN ÜYE OL</button>
+        </div>
+    </div>
 
-    <div id="cursor"></div>
+    <div class="container" id="main-ui">
+        <div class="header-section">
+            <h1 class="main-title">SILVERPLAY <span class="pro-text">PRO</span></h1>
+            <div class="engine-badge">HONYKERU ENGINE v1.0</div>
+            <div class="api-status">● API MODE: ACTIVE</div>
+        </div>
 
-    <div class="container">
-        <h1 class="main-title">SILVER PLAY PRO</h1>
-        <p style="color: white; text-align: center; margin-bottom: 20px;">API Mode: Active (No-Ads)</p>
-        
         <div class="grid-container">
-            <a href="https://iv.melmac.space/trending" class="box selectable" data-type="api">
-                <img src="youtube.png" alt="YouTube API">
+            <!-- YouTube – API ile açılır -->
+            <a href="#" class="box" data-api="youtube" data-name="YouTube (No-Ads)">
+                <img src="youtube.png" alt="YT">
                 <span>YouTube (No-Ads)</span>
             </a>
 
-            <a href="https://piped.video" class="box selectable" data-type="normal">
-                <img src="dizil.png" alt="Dizipal">
-                <span>Dizipal</span>
-            </a>
-
-            <a href="https://vidsrc.xyz/embed/movie?trending=1" class="box selectable" data-type="normal">
-                <img src="hdfilmcehennemi.png" alt="HD Film">
+            <!-- HD Film – Tarayıcıda açılır -->
+            <a href="https://www.hdfilmcehennemi.nl/" class="box" data-api="browser" data-name="HD Film">
+                <img src="hdfilmcehennemi.png" alt="HF">
                 <span>HD Film</span>
             </a>
 
-            <a href="https://movie-web.app" class="box selectable" data-type="normal">
-                <img src="dizi kutusu.png" alt="Dizibox">
+            <!-- Dizipal – Tarayıcıda açılır -->
+            <a href="https://dizipal1539.com/" class="box" data-api="browser" data-name="Dizipal">
+                <img src="dizipal.png" alt="DP">
+                <span>Dizipal</span>
+            </a>
+
+            <!-- Dizibox – Tarayıcıda açılır -->
+            <a href="https://www.dizibox.live/" class="box" data-api="browser" data-name="Dizibox">
+                <img src="dizibox.png" alt="DB">
                 <span>Dizibox</span>
             </a>
         </div>
     </div>
 
-    <div id="video-container">
-        <iframe id="api-frame" src="" allowfullscreen></iframe>
+    <!-- YouTube için özel video oynatıcı -->
+    <div id="youtube-player" class="hidden">
+        <div class="viewer-header">
+            <span id="yt-title">YÜKLENİYOR...</span>
+            <button onclick="ytGeri()" class="close-btn">GERİ</button>
+        </div>
+        <video id="yt-video" controls autoplay></video>
     </div>
 
     <script src="script.js"></script>
