@@ -6,57 +6,62 @@
     <title>Silver Play Pro</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Logo ve Başlık Stili */
-        .header-container {
-            text-align: center;
-            margin-bottom: 30px;
-            cursor: pointer;
+        /* CSS LOGO TASARIMI */
+        .logo-wrapper {
+            display: flex; align-items: center; justify-content: center;
+            gap: 15px; margin-bottom: 20px; font-family: 'Arial Black', sans-serif;
         }
-        .main-logo {
-            max-width: 400px;
-            height: auto;
-        }
+        .silver-text { color: white; font-size: 50px; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
         
-        /* Odaklanma Efekti */
+        /* Turkuaz Üçgen ve Play Yazısı */
+        .play-box {
+            position: relative; padding: 10px 30px;
+            border: 4px solid #00d4ff; clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%);
+            background: rgba(0, 212, 255, 0.1);
+        }
+        .play-text { color: white; font-size: 50px; font-weight: bold; }
+        
+        .pro-text { color: #00d4ff; font-size: 50px; text-shadow: 0 0 20px #00d4ff; }
+
+        /* Odaklanma (Focus) Efekti */
         .box.selected {
             border: 5px solid #00d4ff !important;
             transform: scale(1.1);
             box-shadow: 0 0 25px #00d4ff;
-            transition: 0.2s ease-in-out;
+            transition: 0.2s;
         }
 
-        /* YouTube API Tam Ekran Katmanı */
         #yt-layer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; z-index: 10000; display: none;
         }
-        #yt-frame { width: 100%; height: 100%; border: none; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body class="bg-purple">
 
     <div class="container">
-        <div class="header-container" id="main-nav">
-            <img src="logo.png" alt="SILVER PLAY PRO" class="main-logo">
-            <p style="color: #00d4ff; font-weight: bold; margin-top: 10px;">API Mode: Active (No-Ads)</p>
+        <div class="logo-wrapper" id="main-nav" style="cursor: pointer;">
+            <div class="silver-text">SILVER</div>
+            <div class="play-box"><span class="play-text">PLAY</span></div>
+            <div class="pro-text">PRO</div>
         </div>
+        
+        <p style="color: white; text-align: center; margin-bottom: 20px;">API Mode: Active (No-Ads)</p>
         
         <div class="grid-container">
             <a href="https://yewtu.be/trending" class="box selectable" data-type="internal">
                 <img src="youtube.png" alt="YouTube">
                 <span>YouTube</span>
             </a>
-
             <a href="https://dizipal1539.com/" class="box selectable" data-type="external">
                 <img src="dizil.png" alt="Dizipal">
                 <span>Dizipal</span>
             </a>
-
             <a href="https://www.hdfilmcehennemi.page/" class="box selectable" data-type="external">
                 <img src="hdfilmcehennemi.png" alt="HD Film">
                 <span>HD Film Cehennemi</span>
             </a>
-
             <a href="https://www.hdfilmizle.to/" class="box selectable" data-type="external">
                 <img src="hdfilmizle.png" alt="HD Film İzle">
                 <span>HD Film İzle</span>
