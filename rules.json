@@ -1,8 +1,30 @@
-{
-  "version": "1.0.0",
-  "ads": [".ad-container", ".ytp-ad-overlay", ".video-ads", "iframe[src*='ads']"],
-  "redirects": {
-    "youtube": "https://www.youtube.com/tv",
-    "film": "https://senin-film-siten.com"
-  }
+let x = window.innerWidth / 2;
+let y = window.innerHeight / 2;
+const cursor = document.getElementById('cursor');
+
+function update() {
+    cursor.style.left = x + 'px';
+    cursor.style.top = y + 'px';
+    
+    const hovered = document.elementsFromPoint(x, y);
+    document.querySelectorAll('.item').forEach(i => i.classList.remove('selected'));
+    
+    hovered.forEach(el => {
+        const item = el.closest('.selectable');
+        if (item) item.classList.add('selected');
+    });
 }
+
+document.addEventListener('keydown', (e) => {
+    const s = 40; // Hız
+    if(e.keyCode == 37) x -= s; // Sol
+    if(e.keyCode == 38) y -= s; // Yukarı
+    if(e.keyCode == 39) x += s; // Sağ
+    if(e.keyCode == 40) y += s; // Aşağı
+    if(e.keyCode == 13) { // Enter
+        const target = document.querySelector('.selected');
+        if(target) target.click();
+    }
+    update();
+});
+update();
