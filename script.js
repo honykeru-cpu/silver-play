@@ -1,4 +1,7 @@
-// script.js - Silverplay Pro - YouTube yewtu.be ile, diğer siteler Samsung tarayıcıda, kumanda orijinal YouTube gibi, geri tuşu 1 kez ana sayfa, 2 kez çıkış
+// script.js - Son hali: yewtu.be ile YouTube, diğer siteler soru sormadan Samsung tarayıcısında açılır
+// Kumanda orijinal YouTube gibi çalışır
+// Geri tuşu: 1 kez ana sayfaya, 2 kez çıkış
+// Ana Sayfa butonu: ana sayfaya yönlendir
 
 let geriSayac = 0;
 let geriTimer = null;
@@ -7,14 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Kumanda tuşlarını kaydet
     setTimeout(() => {
         try {
-            if (tizen?.tvinputdevice) {
+            if (tizen && tizen.tvinputdevice) {
                 tizen.tvinputdevice.registerKeyBatch([
                     'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
                     'Enter', 'Return', 'Exit', 'Back'
                 ]);
-                console.log('Kumanda aktif');
+                console.log('Kumanda tuşları kaydedildi');
             }
-        } catch (e) { console.log('Kumanda hatası:', e.message); }
+        } catch (err) {
+            console.error('Kumanda kayıt hatası:', err.message);
+        }
     }, 1500);
 
     const kutular = document.querySelectorAll('.grid-container .box');
@@ -38,10 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const tip = kutu.dataset.type || 'site';
             const url = kutu.href;
-            const name = kutu.dataset.name || 'Site';
+            const ad = kutu.dataset.name || 'Site';
 
             if (tip === 'youtube') {
-                youtubeAc();
+                youtubeBaslat();
             } else {
                 // Diğer siteler - soru sormadan Samsung tarayıcısında aç
                 try {
@@ -59,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Kumanda tuşları (orijinal YouTube gibi akıcı navigasyon)
+    // Kumanda tuşları
     document.addEventListener('keydown', e => {
         let handled = true;
 
@@ -80,10 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const kutu = kutular[aktifIndex];
                 const tip = kutu.dataset.type || 'site';
                 const url = kutu.href;
-                const name = kutu.dataset.name;
+                const ad = kutu.dataset.name;
 
                 if (tip === 'youtube') {
-                    youtubeAc();
+                    youtubeBaslat();
                 } else {
                     try {
                         tizen.application.launchAppControl(
@@ -104,8 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (geriSayac === 1) {
                     // 1 kez - ana sayfaya dön
                     closeAPI();
-                    geriTimer = setTimeout(() => { geriSayac = 0; }, 1000); // 1 sn içinde 2. basmazsa sıfırla
-                } else if (geriSayac === 2) {
+                    geriTimer = setTimeout(() => { geriSayac = 0; }, 800);
+                } else if (geriSayac >= 2) {
                     // 2 kez - çıkış
                     clearTimeout(geriTimer);
                     geriSayac = 0;
@@ -119,49 +124,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (handled) e.preventDefault();
     });
 
-    // YouTube - yewtu.be ile reklamsız
-    function youtubeAc() {
-        const grid = document.querySelector('.grid-container');
-        grid.innerHTML = '<p>Trend videolar yükleniyor...</p>';
-
-        fetch('https://yewtu.be/feed/trending')
-            .then(r => r.text())
-            .then(data => {
-                // Yewtu.be RSS parse et (basit HTML parse)
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(data, "text/html");
-                const videolar = doc.querySelectorAll('.video-item');
-                grid.innerHTML = '';
-                videolar.forEach((v, i) => {
-                    const baslik = v.querySelector('a').textContent;
-                    const thumbnail = v.querySelector('img').src;
-                    const videoUrl = 'https://yewtu.be' + v.querySelector('a').href;
-                    const kutu = document.createElement('div');
-                    kutu.className = 'video-kutu';
-                    kutu.innerHTML = `
-                        <img src="${thumbnail}" alt="${baslik}">
-                        <span>${baslik}</span>
-                    `;
-                    kutu.onclick = () => oynat(videoUrl, baslik);
-                    grid.appendChild(kutu);
-                });
-                odakla(0);
-            })
-            .catch(err => {
-                grid.innerHTML = '<p>Hata: Videolar yüklenemedi</p>';
-                console.error(err);
-            });
-    }
-
-    function oynat(url, baslik) {
-        const title = document.getElementById('api-title');
-        const frame = document.getElementById('api-frame');
-        const container = document.getElementById('video-container');
-
-        title.textContent = baslik;
-        frame.src = url;
-        container.classList.remove('hidden');
-        frame.focus();
+    // YouTube - yewtu.be ile açılıyor
+    function youtubeBaslat() {
+        // Doğrudan yewtu.be ana sayfasına yönlendir (reklamsız YouTube)
+        const url = 'https://yewtu.be';
+        try {
+            tizen.application.launchAppControl(
+                new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", null, null, null, [{name: "url", value: url}]),
+                null,
+                () => console.log('yewtu.be tarayıcıda açıldı'),
+                (err) => console.error('yewtu.be hatası:', err.message),
+                null
+            );
+        } catch (err) {
+            console.error('Launch hatası:', err.message);
+        }
     }
 
     // Iframe kapat
@@ -171,9 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
         odakla(aktifIndex);
     };
 
-    // Ana sayfa butonu
+    // Ana Sayfa butonu
     document.querySelector('.main-home').addEventListener('click', () => {
         closeAPI();
         odakla(0);
     });
+
+    console.log('Silverplay Pro yüklendi - YouTube yewtu.be ile açılır');
 });
