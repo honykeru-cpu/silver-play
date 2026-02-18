@@ -1,35 +1,56 @@
-// Tizen YouTube Style Navigation (YouTube Tarzı Gezinme Sistemi)
+// Tizen Remote and Mouse Integration (Kumanda ve Fare Entegrasyonu)
+
 let currentIndex = 0;
+const cards = document.querySelectorAll('.card');
 
-document.addEventListener('keydown', function(e) {
-    const cards = document.querySelectorAll('.card'); // Kutucukların sınıfı
+// 1. Seçimi Güncelleme Fonksiyonu (Selection Update)
+function updateSelection(index) {
     if (cards.length === 0) return;
+    
+    // Eski seçimi kaldır
+    cards.forEach(card => card.classList.remove('selected'));
+    
+    // Yeni seçimi ekle
+    currentIndex = index;
+    if (cards[currentIndex]) {
+        cards[currentIndex].classList.add('selected');
+        // YouTube tarzı otomatik kaydırma (Scroll)
+        cards[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+    }
+}
 
-    // Önceki seçili olanın stilini kaldır
-    cards[currentIndex].classList.remove('selected');
+// 2. Kumanda Tuş Kontrolü (Remote Control Logic)
+document.addEventListener('keydown', function(e) {
+    // Tuş kodlarını konsola yazar (Hata ayıklama için)
+    console.log("Tuş Basıldı: " + e.keyCode);
 
     switch(e.keyCode) {
         case 37: // Sol (Left)
-            if (currentIndex > 0) currentIndex--;
+            if (currentIndex > 0) updateSelection(currentIndex - 1);
             break;
         case 39: // Sağ (Right)
-            if (currentIndex < cards.length - 1) currentIndex++;
+            if (currentIndex < cards.length - 1) updateSelection(currentIndex + 1);
             break;
         case 13: // Tamam (Enter/OK)
-            cards[currentIndex].click(); // Seçili kutuya tıklar
+            if (cards[currentIndex]) cards[currentIndex].click();
             break;
         case 10009: // Geri (Return/Back)
             if (window.tizen) tizen.application.getCurrentApplication().hide();
             break;
     }
-
-    // Yeni seçilen kutuyu işaretle ve ekrana odakla
-    cards[currentIndex].classList.add('selected');
-    cards[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
 });
 
-// Sayfa ilk açıldığında ilk kutuyu seç
-window.onload = function() {
-    const firstCard = document.querySelector('.card');
-    if (firstCard) firstCard.classList.add('selected');
+// 3. Mouse/Fare Uyumu (Mouse Hover Support)
+// Mouse bir kutunun üzerine geldiğinde kumanda odağını oraya taşır
+cards.forEach((card, index) => {
+    card.addEventListener('mouseenter', () => {
+        updateSelection(index);
+    });
+});
+
+// 4. Sayfa Açıldığında İlk Kutuyu Seç (Auto Focus)
+window.onload = () => {
+    if (cards.length > 0) {
+        setTimeout(() => updateSelection(0), 500);
+    }
 };
