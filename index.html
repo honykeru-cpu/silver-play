@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Silver Play API Launcher</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Filmlerin açılacağı pencerenin stili (Tasarımı bozmaz, gizlidir) */
+        #video-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 9999; display: block;
+        }
+        #video-container.hidden { display: none; }
+        iframe { width: 100%; height: 100%; border: none; }
+        #api-title { 
+            position: absolute; top: 10px; left: 10px; color: white; 
+            background: rgba(0,0,0,0.5); padding: 5px; font-size: 12px;
+        }
+    </style>
 </head>
 <body class="bg-purple">
 
@@ -20,7 +33,7 @@
                 <span>YouTube (No-Ads)</span>
             </a>
 
-            <a href="https://piped.video/trending" class="box selectable">
+            <a href="https://piped.video" class="box selectable">
                 <img src="dizil.png" alt="Dizipal API">
                 <span>Dizipal API</span>
             </a>
@@ -35,6 +48,11 @@
                 <span>Dizibox API</span>
             </a>
         </div>
+    </div>
+
+    <div id="video-container" class="hidden">
+        <div id="api-title">Yükleniyor...</div>
+        <iframe id="api-frame" src="" allowfullscreen></iframe>
     </div>
 
     <script src="script.js"></script>
