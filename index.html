@@ -3,56 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silverplay Pro - V1.0</title>
+    <title>Silver Play API Launcher</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-purple">
+
     <div id="cursor"></div>
 
-    <div class="top-nav">
-        <button class="nav-btn main-home">ANA SAYFA</button>
-        <div class="auth-group">
-            <button class="nav-btn login">GİRİŞ YAP</button>
-            <button class="nav-btn register">HEMEN ÜYE OL</button>
-        </div>
-    </div>
-
-    <div class="container" id="main-ui">
-        <div class="header-section">
-            <h1 class="main-title">SILVERPLAY <span class="pro-text">PRO</span></h1>
-            <div class="engine-badge">HONYKERU ENGINE v1.0</div>
-            <div class="api-status">● API MODE: ACTIVE</div>
-        </div>
+    <div class="container">
+        <h1 class="main-title">SILVER PLAY PRO</h1>
+        <p style="color: white; text-align: center; margin-bottom: 20px;">API Mode: Active (No-Ads)</p>
         
         <div class="grid-container">
-            <a href="https://yewtu.be" class="box" data-name="Youtube API">
-                <img src="youtube.png" alt="YT">
-                <span>Youtube API</span>
+            <a href="https://yewtu.be" class="box selectable">
+                <img src="youtube.png" alt="YouTube API">
+                <span>YouTube (No-Ads)</span>
             </a>
 
-            <a href="https://piped.video" class="box" data-name="Dizipal API">
-                <img src="dizipal.png" alt="DP">
+            <a href="https://piped.video" class="box selectable">
+                <img src="dizil.png" alt="Dizipal API">
                 <span>Dizipal API</span>
             </a>
 
-            <a href="https://vidsrc.to/embed/movie/tt0111161" class="box" data-name="HD Film API">
-                <img src="hdfilmcehennemi.png" alt="HF">
-                <span>HD Film API</span>
+            <a href="https://vidsrc.to/embed/movie/tt0111161" class="box selectable">
+                <img src="hdfilmcehennemi.png" alt="Movie API">
+                <span>HD Film (Clean)</span>
             </a>
 
-            <a href="https://movie-web.app" class="box" data-name="Dizi Kutusu">
-                <img src="dizibox.png" alt="DB">
-                <span>Dizi Kutusu</span>
+            <a href="https://movie-web.app" class="box selectable">
+                <img src="dizi kutusu.png" alt="Dizibox API">
+                <span>Dizibox API</span>
             </a>
         </div>
-    </div>
-
-    <div id="video-container" class="hidden">
-        <div class="viewer-header">
-            <span id="api-title">YÜKLENİYOR...</span>
-            <button onclick="closeAPI()" class="close-btn">KAPAT / GERİ DÖN</button>
-        </div>
-        <iframe id="api-frame" src="" sandbox="allow-forms allow-scripts allow-same-origin" allowfullscreen></iframe>
     </div>
 
     <script src="script.js"></script>
