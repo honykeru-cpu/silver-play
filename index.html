@@ -5,19 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Silver Play API Launcher</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Tasarımı bozmayan, sadece API açıldığında görünen katman */
-        #video-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; z-index: 9999;
-        }
-        #video-container.hidden { display: none; }
-        iframe { width: 100%; height: 100%; border: none; }
-        #api-title { 
-            position: absolute; top: 10px; left: 10px; color: white; 
-            background: rgba(0,0,0,0.5); padding: 5px; font-size: 14px; z-index: 10000; 
-        }
-    </style>
 </head>
 <body class="bg-purple">
 
@@ -28,31 +15,26 @@
         <p style="color: white; text-align: center; margin-bottom: 20px;">API Mode: Active (No-Ads)</p>
         
         <div class="grid-container">
-            <a href="https://iv.melmac.space/trending" class="box selectable" data-name="YouTube PRO">
+            <a href="https://iv.melmac.space/trending" class="box selectable">
                 <img src="youtube.png" alt="YouTube API">
                 <span>YouTube (No-Ads)</span>
             </a>
 
-            <a href="https://piped.video/trending" class="box selectable" data-name="Dizipal API">
+            <a href="https://piped.video/trending" class="box selectable">
                 <img src="dizil.png" alt="Dizipal API">
                 <span>Dizipal API</span>
             </a>
 
-            <a href="https://vidsrc.xyz/embed/movie?trending=1" class="box selectable" data-name="HD Film Clean">
+            <a href="https://vidsrc.xyz/embed/movie?trending=1" class="box selectable">
                 <img src="hdfilmcehennemi.png" alt="Movie API">
                 <span>HD Film (Clean)</span>
             </a>
 
-            <a href="https://movie-web.app/search/series" class="box selectable" data-name="Dizibox API">
+            <a href="https://movie-web.app/search/series" class="box selectable">
                 <img src="dizi kutusu.png" alt="Dizibox API">
                 <span>Dizibox API</span>
             </a>
         </div>
-    </div>
-
-    <div id="video-container" class="hidden">
-        <div id="api-title">YÜKLENİYOR...</div>
-        <iframe id="api-frame" src="" allowfullscreen></iframe>
     </div>
 
     <script src="script.js"></script>
