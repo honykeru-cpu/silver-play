@@ -1,247 +1,61 @@
-body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* Arka plana bg.png dosyasını yüklemeyi unutma */
-    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('bg.png');
-    background-size: cover;
-    background-position: center;
-    font-family: 'Segoe UI', sans-serif;
-    overflow: hidden;
-    cursor: none;
-}
+let currentPos = 0;
+let backPressCount = 0;
+let backTimer;
 
-/* İmleç */
-#cursor {
-    position: fixed;
-    width: 28px;
-    height: 28px;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="turquoise" stroke="white" stroke-width="1.5"><path d="M7 2l12 11.01h-7v6.99z"/></svg>') no-repeat;
-    pointer-events: none;
-    z-index: 99999;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const items = document.querySelectorAll('.selectable');
+    const ytLayer = document.getElementById('yt-layer');
+    const ytFrame = document.getElementById('yt-frame');
 
-/* Navigasyon */
-.top-nav {
-    position: absolute;
-    top: 40px;
-    width: 90%;
-    display: flex;
-    justify-content: space-between;
-}
+    function setFocus(idx) {
+        items.forEach(item => item.classList.remove('selected'));
+        if (items[idx]) {
+            items[idx].classList.add('selected');
+            currentPos = idx;
+        }
+    }
 
-.nav-btn {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: white;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-}
+    setFocus(0);
 
-.main-home { font-size: 22px; border-color: turquoise; }
+    document.addEventListener('keydown', (e) => {
+        switch(e.keyCode) {
+            case 37: if (currentPos > 0) setFocus(currentPos - 1); break;
+            case 39: if (currentPos < items.length - 1) setFocus(currentPos + 1); break;
+            case 13: // Enter
+                const link = items[currentPos].getAttribute('href');
+                const type = items[currentPos].getAttribute('data-type');
 
-/* Başlık ve Logo */
-.main-title {
-    color: white;
-    font-size: 110px;
-    font-weight: 900;
-    margin: 0;
-    letter-spacing: -3px;
-    text-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
-}
+                if (type === "internal") {
+                    e.preventDefault();
+                    ytLayer.style.display = 'block';
+                    ytFrame.src = link;
+                } else {
+                    // Tarayıcıya zorla fırlat
+                    if (window.tizen) {
+                        try {
+                            const appControl = new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", link);
+                            tizen.application.launchAppControl(appControl, "org.tizen.browser", null, null);
+                        } catch(i) { window.location.href = link; }
+                    } else { window.open(link, '_blank'); }
+                }
+                break;
+            case 10009: // Geri
+                if (ytLayer.style.display === 'block') {
+                    ytLayer.style.display = 'none';
+                    ytFrame.src = "";
+                } else {
+                    backPressCount++;
+                    setFocus(0); // Tek tuş başa atar
+                    if (backPressCount === 1) {
+                        backTimer = setTimeout(() => { backPressCount = 0; }, 1500);
+                    } else if (backPressCount === 2) {
+                        clearTimeout(backTimer);
+                        if (window.tizen) tizen.application.getCurrentApplication().exit();
+                    }
+                }
+                break;
+        }
+    });
 
-.pro-text { color: #00d4ff; font-weight: 200; }
-
-.engine-badge { color: rgba(255,255,255,0.4); letter-spacing: 6px; text-align: center; }
-
-.api-status { color: #00ff88; font-size: 14px; font-weight: bold; text-align: center; margin-top: 10px; }
-
-/* Kutular */
-.grid-container { display: flex; gap: 25px; margin-top: 50px; }
-
-.box {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255,255,255,0.1);
-    border-radius: 20px;
-    padding: 25px;
-    width: 160px;
-    text-decoration: none;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-}
-
-.box:hover, .box.selected {
-    border-color: #00d4ff;
-    background: rgba(0, 212, 255, 0.2);
-    transform: scale(1.1);
-}
-
-.box img { width: 70px; height: 70px; margin-bottom: 15px; }
-
-/* API İzleyici Stilleri */
-#video-container {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: black; z-index: 100000;
-}
-
-.viewer-header {
-    height: 60px; background: #111;
-    display: flex; justify-content: space-between;
-    align-items: center; padding: 0 30px;
-    border-bottom: 2px solid turquoise;
-}
-
-#api-title { color: white; font-weight: bold; }
-
-.close-btn {
-    background: #ff4444; color: white; border: none;
-    padding: 10px 20px; border-radius: 5px; cursor: pointer;
-}
-
-#api-frame { width: 100%; height: calc(100% - 60px); border: none; }
-
-.hidden { display: none !important; }
-.box.focused {
-    outline: 5px solid #00d4ff;
-    outline-offset: 4px;
-    transform: scale(1.08);
-    box-shadow: 0 0 25px rgba(0, 212, 255, 0.7);
-    transition: all 0.25s ease-out;  /* yavaş geçiş efekti */
-    z-index: 10;
-}
-.box.focused {
-    outline: 5px solid #00d4ff !important;
-    outline-offset: 4px;
-    transform: scale(1.08);
-    box-shadow: 0 0 25px rgba(0, 212, 255, 0.7);
-    transition: all 0.3s ease;
-    z-index: 10;
-    .video-kutu {
-    width: 300px; height: 200px; margin: 10px; cursor: pointer;
-}
-.video-kutu img { width: 100%; height: 150px; object-fit: cover; }
-.video-kutu span { display: block; margin-top: 5px; font-size: 14px; }
-#youtube-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; }
-#yt-video { width: 100%; height: 90vh; }
-
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background: #0d0d0d;
-    color: #fff;
-}
-
-.top-nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 20px;
-    background: #111;
-}
-
-.nav-btn {
-    background: #222;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    margin: 0 5px;
-    cursor: pointer;
-}
-
-.container {
-    padding: 20px;
-    text-align: center;
-}
-
-.main-title {
-    font-size: 3em;
-    margin: 0;
-}
-
-.pro-text {
-    color: #00ffea;
-}
-
-.engine-badge, .api-status {
-    font-size: 1.2em;
-    margin: 10px 0;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-
-.box {
-    background: #222;
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    color: #fff;
-    transition: all 0.3s;
-}
-
-.box img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-}
-
-.box span {
-    display: block;
-    padding: 10px;
-    font-size: 1.1em;
-}
-
-.box.focused {
-    outline: 5px solid #00ffea;
-    transform: scale(1.08);
-    box-shadow: 0 0 25px #00ffea80;
-}
-
-#video-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    z-index: 1000;
-}
-
-.viewer-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-    background: #111;
-}
-
-.close-btn {
-    background: #ff4444;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-}
-
-#api-frame {
-    width: 100%;
-    height: calc(100% - 60px);
-    border: none;
-}
-
-.hidden {
-    display: none !important;
-}
+    document.getElementById('main-nav').addEventListener('click', () => { window.location.reload(); });
+});
