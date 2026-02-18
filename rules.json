@@ -1,30 +1,18 @@
-// Tizen Remote Key Mapping (Uzaktan Kumanda Tuş Eşlemesi - Anahtar Haritalama)
+// Tizen Remote Control (Televizyon Uzaktan Kumanda - Uzaktan Kumanda)
 document.addEventListener('keydown', function(e) {
-    console.log("Basılan Tuş Kodu: " + e.keyCode);
-
+    console.log("Tuş Basıldı: " + e.keyCode);
     switch(e.keyCode) {
-        case 37: // Left (Sol)
-            console.log("Sola basıldı");
-            // Buraya sol tuş fonksiyonunu ekleyeceğiz
+        case 37: // Sol
+            console.log("Sola gidiliyor...");
             break;
-        case 38: // Up (Yukarı)
-            console.log("Yukarı basıldı");
+        case 39: // Sağ
+            console.log("Sağa gidiliyor...");
             break;
-        case 39: // Right (Sağ)
-            console.log("Sağa basıldı");
-            // Buraya sağ tuş fonksiyonunu ekleyeceğiz
+        case 13: // OK
+            alert("Seçildi!");
             break;
-        case 40: // Down (Aşağı)
-            console.log("Aşağı basıldı");
-            break;
-        case 13: // Enter/OK (Tamam/Seç)
-            console.log("Tamam basıldı");
-            break;
-        case 10009: // Return/Back (Geri/Dönüş)
-            console.log("Geri basıldı");
-            if (window.tizen) {
-                tizen.application.getCurrentApplication().hide();
-            }
+        case 10009: // Geri
+            if(window.tizen) tizen.application.getCurrentApplication().hide();
             break;
     }
 });
