@@ -4,59 +4,90 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Arka plana o film afişli görseli 'bg.png' adıyla kaydedip yüklemelisin */
-    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('bg.png');
+    /* Arka plana yükleyeceğin afiş görselinin adı 'bg.png' olmalı */
+    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('bg.png');
     background-size: cover;
-    font-family: 'Arial', sans-serif;
+    background-position: center;
+    font-family: 'Segoe UI', sans-serif;
     overflow: hidden;
-    cursor: none; /* Standart oku gizle */
+    cursor: none;
 }
 
-/* Küçük Turkuaz Ok İmleci (Cursor - İmleç) */
+/* Küçük Turkuaz Ok */
 #cursor {
     position: fixed;
-    width: 30px; /* İstediğin gibi %80 küçültülmüş boyut */
-    height: 30px;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="turquoise" stroke="white" stroke-width="1"><path d="M7 2l12 11.01h-7v6.99z"/></svg>') no-repeat;
+    width: 24px;
+    height: 24px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="turquoise" stroke="white" stroke-width="1.5"><path d="M7 2l12 11.01h-7v6.99z"/></svg>') no-repeat;
     pointer-events: none;
-    z-index: 10000;
+    z-index: 9999;
 }
 
-.container { text-align: center; width: 100%; }
+/* Üst Navigasyon */
+.top-nav {
+    position: absolute;
+    top: 40px;
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+.nav-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.main-home { font-size: 20px; border-color: turquoise; box-shadow: 0 0 15px rgba(64, 224, 208, 0.3); }
+
+/* Başlık Tasarımı */
 .main-title {
     color: white;
-    font-size: 80px;
-    font-weight: bold;
-    letter-spacing: 10px;
-    margin-bottom: 5px;
-    text-shadow: 0 0 20px rgba(0,212,255,0.8);
+    font-size: 100px; /* Daha dolgun ve büyük */
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -2px;
+    text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
 }
 
-.engine-text { color: #ccc; font-size: 18px; margin-bottom: 20px; }
+.pro-text { color: #00d4ff; font-weight: 300; margin-left: -10px; }
 
+.engine-badge { color: rgba(255,255,255,0.5); letter-spacing: 5px; margin-top: -10px; }
+
+.api-status { color: #00ff88; font-size: 14px; margin-top: 10px; font-weight: bold; }
+
+/* Uygulama Kutuları */
 .grid-container {
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 50px;
+    gap: 25px;
+    margin-top: 60px;
 }
 
 .box {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255,255,255,0.2);
-    border-radius: 15px;
-    padding: 15px;
-    width: 150px;
-    transition: 0.3s;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 25px;
+    width: 160px;
     text-decoration: none;
     color: white;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    backdrop-filter: blur(10px);
 }
 
 .box:hover, .box.selected {
-    border-color: turquoise;
-    transform: scale(1.1);
-    background: rgba(64, 224, 208, 0.2);
+    border-color: #00d4ff;
+    background: rgba(0, 212, 255, 0.15);
+    transform: scale(1.1) translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 
-.box img { width: 60px; height: 60
+.box img { width: 70px; height: 70px; margin-bottom: 15px; }
