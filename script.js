@@ -1,53 +1,68 @@
-// script.js - Silverplay Pro | Kumanda + YouTube No-Ads + Diğerleri Tarayıcıda
+// script.js - Silverplay Pro - Son hali: YouTube Piped ile açılıyor, diğer siteler soru sormadan Samsung tarayıcısında açılıyor, geri tuşu 1 kez ana sayfa, 2 kez çıkış
+
+let geriSayac = 0;
+let geriTimer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Kumanda tuşlarını kaydet
+    // Kumanda tuşlarını kaydet (gecikmeli)
     setTimeout(() => {
         try {
-            if (tizen?.tvinputdevice) {
+            if (tizen && tizen.tvinputdevice) {
                 tizen.tvinputdevice.registerKeyBatch([
                     'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
                     'Enter', 'Return', 'Exit', 'Back'
                 ]);
-                console.log('Kumanda tuşları aktif');
+                console.log('Kumanda tuşları kaydedildi');
             }
-        } catch (e) {
-            console.log('Kumanda hatası:', e.message);
+        } catch (err) {
+            console.error('Kumanda kayıt hatası:', err.message);
         }
     }, 1500);
 
     const kutular = document.querySelectorAll('.grid-container .box');
     let aktifIndex = 0;
+    let youtubeModu = false;
 
-    function odakla(index) {
+    function odakla(i) {
         kutular.forEach(k => k.classList.remove('focused'));
-        if (kutular[index]) {
-            kutular[index].classList.add('focused');
-            kutular[index].focus();
-            aktifIndex = index;
+        if (kutular[i]) {
+            kutular[i].classList.add('focused');
+            kutular[i].focus();
+            aktifIndex = i;
         }
     }
 
     if (kutular.length > 0) odakla(0);
 
-    // Mouse desteği
     kutular.forEach((kutu, i) => {
         kutu.addEventListener('mouseover', () => odakla(i));
         kutu.addEventListener('click', e => {
             e.preventDefault();
-            const type = kutu.dataset.type;
+            const tip = kutu.dataset.type || 'site';
             const url = kutu.href;
-            const name = kutu.dataset.name;
+            const ad = kutu.dataset.name || 'Site';
 
-            if (type === 'youtube') {
+            if (tip === 'youtube') {
+                youtubeModu = true;
                 youtubeBaslat();
-            } else if (type === 'site') {
-                tarayiciAc(url, name);
+            } else {
+                // Diğer siteler → Samsung tarayıcıyı doğrudan aç (soru sormadan)
+                try {
+                    tizen.application.launchAppControl(
+                        new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", null, null, null, [{name: "url", value: url}]),
+                        null,
+                        () => console.log('Tarayıcı açıldı'),
+                        (err) => console.error('Tarayıcı açma hatası:', err),
+                        null
+                    );
+                } catch (err) {
+                    console.error('Launch hatası:', err);
+                    alert('Tarayıcı açılamadı: ' + url);
+                }
             }
         });
     });
 
-    // Kumanda tuşları
     document.addEventListener('keydown', e => {
         let handled = true;
 
@@ -58,19 +73,51 @@ document.addEventListener('DOMContentLoaded', () => {
             case 40: if (aktifIndex + 4 < kutular.length) odakla(aktifIndex + 4); break;
             case 13:
                 const kutu = kutular[aktifIndex];
-                const type = kutu.dataset.type;
+                const tip = kutu.dataset.type || 'site';
                 const url = kutu.href;
-                const name = kutu.dataset.name;
+                const ad = kutu.dataset.name;
 
-                if (type === 'youtube') {
+                if (tip === 'youtube') {
+                    youtubeModu = true;
                     youtubeBaslat();
-                } else if (type === 'site') {
-                    tarayiciAc(url, name);
+                } else {
+                    try {
+                        tizen.application.launchAppControl(
+                            new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", null, null, null, [{name: "url", value: url}]),
+                            null,
+                            () => console.log('Tarayıcı açıldı'),
+                            (err) => console.error('Tarayıcı hatası:', err),
+                            null
+                        );
+                    } catch (err) {
+                        console.error('Launch hatası:', err);
+                    }
                 }
                 break;
-            case 10009: case 461:
-                tizen.application.getCurrentApplication().exit();
+
+            case 10009: // Return / Back tuşu
+            case 461:
+                if (youtubeModu) {
+                    youtubeModu = false;
+                    document.getElementById('video-container').classList.add('hidden');
+                    odakla(aktifIndex);
+                } else {
+                    geriSayac++;
+                    if (geriSayac === 1) {
+                        // 1 kez basıldı → ana sayfaya dön (iframe varsa kapat)
+                        document.getElementById('video-container').classList.add('hidden');
+                        odakla(aktifIndex);
+                        geriTimer = setTimeout(() => { geriSayac = 0; }, 800);
+                    } else if (geriSayac >= 2) {
+                        // 2 kez basıldı → uygulamadan çık
+                        clearTimeout(geriTimer);
+                        try {
+                            tizen.application.getCurrentApplication().exit();
+                        } catch {}
+                    }
+                }
                 break;
+
             default:
                 handled = false;
         }
@@ -78,22 +125,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (handled) e.preventDefault();
     });
 
-    // YouTube No-Ads (Piped API)
-    const PIPED = "https://pipedapi.kavin.rocks";
-
+    // YouTube modu başlat (trend videolar)
     function youtubeBaslat() {
         const grid = document.querySelector('.grid-container');
-        grid.innerHTML = '<p>Trend Videolar Yükleniyor...</p>';
+        grid.innerHTML = '<p>Trend videolar yükleniyor...</p>';
 
-        fetch(`${PIPED}/trending`)
+        fetch('https://pipedapi.kavin.rocks/trending')
             .then(r => r.json())
-            .then(data => {
+            .then(videolar => {
                 grid.innerHTML = '';
-                data.forEach((v, i) => {
+                videolar.forEach((v, i) => {
                     const kutu = document.createElement('div');
                     kutu.className = 'video-kutu';
                     kutu.innerHTML = `
-                        <img src="${v.thumbnail[0].url}" alt="${v.title}">
+                        <img src="${v.thumbnail}" alt="${v.title}">
                         <span>${v.title}</span>
                     `;
                     kutu.onclick = () => oynat(v);
@@ -102,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 odakla(0);
             })
             .catch(err => {
-                grid.innerHTML = '<p>Hata: Videolar yüklenemedi</p>';
+                grid.innerHTML = '<p>Videolar yüklenemedi</p>';
                 console.error(err);
             });
     }
@@ -118,15 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
         frame.focus();
     }
 
-    // Diğer siteler için tarayıcı aç (uygulama kapanır)
-    function tarayiciAc(url, name) {
-        alert(`"${name}" sitesini Samsung Web Tarayıcıda açın: ${url}`);
-        tizen.application.getCurrentApplication().exit();
-    }
-
-    // Eski API fonksiyonları (iframe için)
+    // Eski iframe fonksiyonları
     window.openAPI = (url, title) => {
-        document.getElementById('api-title').textContent = title;
+        document.getElementById('api-title').textContent = title || 'YÜKLENİYOR...';
         document.getElementById('api-frame').src = url;
         document.getElementById('video-container').classList.remove('hidden');
     };
@@ -136,6 +175,4 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('video-container').classList.add('hidden');
         odakla(aktifIndex);
     };
-
-    console.log('Silverplay Pro yüklendi');
 });
