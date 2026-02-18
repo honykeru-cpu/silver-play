@@ -1,47 +1,35 @@
-// Tizen Remote and Mouse Support (Kumanda ve Fare Desteği)
+// Tizen YouTube Style Navigation (YouTube Tarzı Gezinme Sistemi)
+let currentIndex = 0;
 
-// 1. Kumanda Tuşlarını Tanımlama (Key Mapping)
 document.addEventListener('keydown', function(e) {
-    console.log("Basılan Tuş: " + e.keyCode);
+    const cards = document.querySelectorAll('.card'); // Kutucukların sınıfı
+    if (cards.length === 0) return;
 
-    switch(e.keyCode) {
-        case 37: // Sol
-            moveSelection('left');
-            break;
-        case 38: // Yukarı
-            moveSelection('up');
-            break;
-        case 39: // Sağ
-            moveSelection('right');
-            break;
-        case 40: // Aşağı
-            moveSelection('down');
-            break;
-        case 13: // Tamam (OK)
-            const selected = document.querySelector('.selected');
-            if(selected) selected.click();
-            break;
-        case 10009: // Geri (Return)
-            if(window.tizen) tizen.application.getCurrentApplication().hide();
-            break;
-    }
-});
-
-// 2. Gezinme Fonksiyonu (Navigation - Gezinme)
-function moveSelection(direction) {
-    // Görsel yapını bozmamak için sadece seçili elemanı değiştirir
-    const cards = document.querySelectorAll('.card'); 
-    let currentIndex = Array.from(cards).findIndex(c => c.classList.contains('selected'));
-    
-    if (currentIndex === -1) {
-        if(cards[0]) cards[0].classList.add('selected');
-        return;
-    }
-
+    // Önceki seçili olanın stilini kaldır
     cards[currentIndex].classList.remove('selected');
 
-    if (direction === 'right' && currentIndex < cards.length - 1) currentIndex++;
-    if (direction === 'left' && currentIndex > 0) currentIndex--;
-    
+    switch(e.keyCode) {
+        case 37: // Sol (Left)
+            if (currentIndex > 0) currentIndex--;
+            break;
+        case 39: // Sağ (Right)
+            if (currentIndex < cards.length - 1) currentIndex++;
+            break;
+        case 13: // Tamam (Enter/OK)
+            cards[currentIndex].click(); // Seçili kutuya tıklar
+            break;
+        case 10009: // Geri (Return/Back)
+            if (window.tizen) tizen.application.getCurrentApplication().hide();
+            break;
+    }
+
+    // Yeni seçilen kutuyu işaretle ve ekrana odakla
     cards[currentIndex].classList.add('selected');
-}
+    cards[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+});
+
+// Sayfa ilk açıldığında ilk kutuyu seç
+window.onload = function() {
+    const firstCard = document.querySelector('.card');
+    if (firstCard) firstCard.classList.add('selected');
+};
