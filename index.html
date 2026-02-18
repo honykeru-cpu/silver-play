@@ -3,56 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silverplay Pro - V1.0</title>
+    <title>Silver Play Pro</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Fokus (Odak) Efekti - Orijinal YouTube gibi */
+        .box.selected {
+            border: 4px solid #00d4ff !important;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #00d4ff;
+            transition: all 0.2s ease-in-out;
+        }
+        /* YouTube için tam ekran katman */
+        #youtube-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 9999; display: none;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
 </head>
-<body>
-    <div id="cursor"></div>
+<body class="bg-purple">
 
-    <div class="top-nav">
-        <button class="nav-btn main-home">ANA SAYFA</button>
-        <div class="auth-group">
-            <button class="nav-btn login">GİRİŞ YAP</button>
-            <button class="nav-btn register">HEMEN ÜYE OL</button>
-        </div>
-    </div>
-
-    <div class="container" id="main-ui">
-        <div class="header-section">
-            <h1 class="main-title">SILVERPLAY <span class="pro-text">PRO</span></h1>
-            <div class="engine-badge">HONYKERU ENGINE v1.0</div>
-            <div class="api-status">● API MODE: ACTIVE</div>
-        </div>
+    <div class="container">
+        <h1 class="main-title" id="nav-home">SILVER PLAY PRO</h1>
+        <p style="color: white; text-align: center; margin-bottom: 20px;">API Mode: Active (No-Ads)</p>
         
         <div class="grid-container">
-            <a href="#" class="box" data-name="Youtube API" data-type="youtube">
-                <img src="youtube.png" alt="YT">
-                <span>Youtube (No-Ads)</span>
+            <a href="https://yewtu.be/trending" class="box selectable" data-type="youtube">
+                <img src="youtube.png" alt="YouTube">
+                <span>YouTube (No-Ads)</span>
             </a>
 
-            <a href="https://www.hdfilmcehennemi.nl/" class="box" data-name="HD Film API" data-type="site">
-                <img src="hdfilmcehennemi.png" alt="HF">
-                <span>HD Film</span>
-            </a>
-
-            <a href="https://dizipal1539.com/" class="box" data-name="Dizipal API" data-type="site">
-                <img src="dizipal.png" alt="DP">
+            <a href="https://dizipal.com" class="box selectable" data-type="browser">
+                <img src="dizil.png" alt="Dizipal">
                 <span>Dizipal</span>
             </a>
 
-            <a href="https://www.dizibox.live/" class="box" data-name="Dizi Kutusu" data-type="site">
-                <img src="dizibox.png" alt="DB">
+            <a href="https://vidsrc.me/embed/movie?trending=1" class="box selectable" data-type="browser">
+                <img src="hdfilmcehennemi.png" alt="HD Film">
+                <span>HD Film</span>
+            </a>
+
+            <a href="https://movie-web.app" class="box selectable" data-type="browser">
+                <img src="dizi kutusu.png" alt="Dizibox">
                 <span>Dizibox</span>
             </a>
         </div>
     </div>
 
-    <div id="video-container" class="hidden">
-        <div class="viewer-header">
-            <span id="api-title">YÜKLENİYOR...</span>
-            <button onclick="closeAPI()" class="close-btn">KAPAT / GERİ DÖN</button>
-        </div>
-        <iframe id="api-frame" src="" sandbox="allow-forms allow-scripts allow-same-origin" allowfullscreen></iframe>
+    <div id="youtube-layer">
+        <iframe id="yt-frame" src="" allowfullscreen></iframe>
     </div>
 
     <script src="script.js"></script>
