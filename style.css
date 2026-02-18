@@ -1,15 +1,72 @@
-/* SENİN ESKİ CSS KODLARIN BURADAN DEVAM EDİYOR (Hiçbirini silme) */
-
-/* Kumanda ile üzerine gelinen kutunun parlaması için bunu en alta ekle: */
-.card.selected {
-    outline: 6px solid #ff0000 !important; /* Çerçeve yerine dış çizgi (Layout bozmaz) */
-    transform: scale(1.05); /* Çok hafif büyütme */
-    box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
-    transition: all 0.2s ease;
-    z-index: 999;
+/* Silverplay Pro - Orijinal Mor Tema */
+body.bg-purple {
+    background: radial-gradient(circle, #2e004f 0%, #000000 100%); /* Mor/Siyah geçişli arka plan */
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: none !important; /* Fare imlecini gizler */
 }
 
-/* Mouse imlecini gizlemek istersen (isteğe bağlı): */
-body {
-    cursor: none !important;
+.container {
+    width: 90%;
+    max-width: 1200px;
+}
+
+.main-title {
+    text-align: center;
+    font-size: 3rem;
+    letter-spacing: 5px;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    margin-top: 0;
+}
+
+/* Kutu Izgara Düzeni (Grid) */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 yan yana kutu */
+    gap: 25px;
+    padding: 20px;
+}
+
+/* Kutuların Ana Hali */
+.box {
+    text-decoration: none;
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.box img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.box span {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* KUMANDA İLE SEÇİLDİĞİNDE (YouTube Tarzı Parlama) */
+/* script.js 'selectable' yerine 'selected' sınıfını eklerse burası çalışır */
+.box.selected {
+    border: 5px solid #ff00ea !important; /* Parlak Mor/Pembe çerçeve */
+    background: rgba(255, 0, 234, 0.1);
+    transform: scale(1.1); /* Kutuyu büyütür */
+    box-shadow: 0 0 30px rgba(255, 0, 234, 0.6);
+    z-index: 10;
 }
