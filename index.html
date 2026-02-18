@@ -6,14 +6,14 @@
     <title>Silver Play Pro</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Orijinal YouTube odaklanma efekti */
+        /* YouTube odaklanma (Focus) efekti */
         .box.selected {
             border: 5px solid #00d4ff !important;
             transform: scale(1.1);
             box-shadow: 0 0 25px #00d4ff;
             transition: 0.2s;
         }
-        /* YouTube için tam ekran pencere */
+        /* YouTube API Katmanı */
         #yt-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 9999; display: none;
@@ -28,22 +28,22 @@
         <p style="color: white; text-align: center; margin-bottom: 20px;">API Mode: Active (No-Ads)</p>
         
         <div class="grid-container">
-            <a href="https://yewtu.be/trending" class="box selectable" data-target="internal">
+            <a href="https://yewtu.be/trending" class="box selectable" data-type="internal">
                 <img src="youtube.png" alt="YouTube">
                 <span>YouTube</span>
             </a>
 
-            <a href="https://dizipal1539.com/" class="box selectable" data-target="external">
+            <a href="https://dizipal1539.com/" class="box selectable" data-type="external">
                 <img src="dizil.png" alt="Dizipal">
                 <span>Dizipal</span>
             </a>
 
-            <a href="https://www.hdfilmcehennemi.page/" class="box selectable" data-target="external">
+            <a href="https://www.hdfilmcehennemi.page/" class="box selectable" data-type="external">
                 <img src="hdfilmcehennemi.png" alt="HD Film">
                 <span>HD Film Cehennemi</span>
             </a>
 
-            <a href="https://www.hdfilmizle.to/" class="box selectable" data-target="external">
+            <a href="https://www.hdfilmizle.to/" class="box selectable" data-type="external">
                 <img src="dizi kutusu.png" alt="HD Film İzle">
                 <span>HD Film İzle</span>
             </a>
