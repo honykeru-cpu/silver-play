@@ -15,14 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    setFocus(0); // İlk açılış YouTube odaklı
+    setFocus(0);
 
     document.addEventListener('keydown', (e) => {
-        // Tizen Tuş Kodları: 37:Sol, 39:Sağ, 13:Enter, 10009:Geri
         switch(e.keyCode) {
             case 37: if (currentPos > 0) setFocus(currentPos - 1); break;
             case 39: if (currentPos < items.length - 1) setFocus(currentPos + 1); break;
-            case 13: // Enter (Tamam)
+            case 13: // Enter
                 const link = items[currentPos].getAttribute('href');
                 const type = items[currentPos].getAttribute('data-type');
 
@@ -31,32 +30,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     ytLayer.style.display = 'block';
                     ytFrame.src = link;
                 } else {
-                    // Samsung TV Tarayıcısını Zorla Aç (AppControl)
-                    if (window.tizen && tizen.application) {
+                    // Tarayıcıya zorla fırlat
+                    if (window.tizen) {
                         try {
-                            const appControl = new tizen.ApplicationControl(
-                                "http://tizen.org/appcontrol/operation/view",
-                                link
-                            );
-                            tizen.application.launchAppControl(appControl, "org.tizen.browser",
-                                () => { console.log("Harici Tarayıcı Açıldı"); },
-                                (err) => { window.location.href = link; }
-                            );
-                        } catch(e) { window.location.href = link; }
-                    } else {
-                        window.open(link, '_blank'); // PC için yeni sekme
-                    }
+                            const appControl = new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", link);
+                            tizen.application.launchAppControl(appControl, "org.tizen.browser", null, null);
+                        } catch(i) { window.location.href = link; }
+                    } else { window.open(link, '_blank'); }
                 }
                 break;
-            case 10009: // Return (Geri Tuşu)
+            case 10009: // Geri
                 if (ytLayer.style.display === 'block') {
                     ytLayer.style.display = 'none';
                     ytFrame.src = "";
                 } else {
-                    // Akıllı Geri Tuşu: 1 Basış = Başa Dön | 2 Basış = Çıkış
                     backPressCount++;
-                    setFocus(0); // Odağı YouTube'a çek
-                    
+                    setFocus(0); // Tek tuş başa atar
                     if (backPressCount === 1) {
                         backTimer = setTimeout(() => { backPressCount = 0; }, 1500);
                     } else if (backPressCount === 2) {
@@ -68,8 +57,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Logoya/Başlığa tıklayınca ana sayfayı yenile
-    document.getElementById('main-nav').addEventListener('click', () => {
-        window.location.reload();
-    });
+    document.getElementById('main-nav').addEventListener('click', () => { window.location.reload(); });
 });
