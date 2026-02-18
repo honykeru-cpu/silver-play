@@ -15,11 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // İlk açılış odağı
-    setFocus(0);
+    setFocus(0); // İlk açılış odağı YouTube
 
     document.addEventListener('keydown', (e) => {
-        // Tizen Kumanda Kodları: 37:Sol, 39:Sağ, 13:Tamam, 10009:Geri
+        // Tizen Kumanda Kodları: 37:Sol, 39:Sağ, 13:Enter, 10009:Geri
         switch(e.keyCode) {
             case 37: // Sol
                 if (currentPos > 0) setFocus(currentPos - 1);
@@ -29,26 +28,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 13: // Tamam (Enter)
                 const link = items[currentPos].getAttribute('href');
-                const targetType = items[currentPos].getAttribute('data-target');
+                const type = items[currentPos].getAttribute('data-type');
 
-                if (targetType === "internal") {
+                if (type === "internal") {
                     e.preventDefault();
                     ytFrame.src = link;
                     ytLayer.style.display = 'block';
                 } else {
-                    // TV Tarayıcısında doğrudan aç
-                    window.location.href = link;
+                    // Samsung TV Tarayıcısını dışarıdan başlatma komutu
+                    if (window.tizen) {
+                        tizen.application.launch("org.tizen.browser", function() {
+                            // Tarayıcı açıldıktan sonra linke yönlendir
+                            window.location.href = link;
+                        });
+                    } else {
+                        window.location.href = link;
+                    }
                 }
                 break;
             case 10009: // Geri (Return)
-            case 27:    // PC için ESC
                 if (ytLayer.style.display === 'block') {
                     ytLayer.style.display = 'none';
                     ytFrame.src = "";
                 } else {
-                    // 2 Kere Basınca Çıkış Mantığı
+                    // 2 Kere Basınca Çıkış / Tek basınca Ana Sayfaya Atma
                     backPressCount++;
-                    setFocus(0); // Tek basışta odağı YouTube'a (başa) çeker
+                    setFocus(0); // Tek basışta odağı en başa atar
                     
                     if (backPressCount === 1) {
                         backTimer = setTimeout(() => { backPressCount = 0; }, 1500);
@@ -61,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Ana Sayfa başlığına basınca her şeyi sıfırla
+    // Silver Play Pro başlığına tıklanınca ana sayfayı yenile
     document.getElementById('main-nav').addEventListener('click', () => {
         window.location.reload();
     });
