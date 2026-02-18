@@ -1,67 +1,68 @@
-let currentIndex = 0;
-let lastBackClick = 0;
+let currentPos = 0;
+let backPressCount = 0;
+let backTimer;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.selectable');
-    const ytLayer = document.getElementById('youtube-layer');
+    const items = document.querySelectorAll('.selectable');
+    const ytLayer = document.getElementById('yt-layer');
     const ytFrame = document.getElementById('yt-frame');
 
-    function updateSelection(index) {
-        cards.forEach(c => c.classList.remove('selected'));
-        if (cards[index]) {
-            cards[index].classList.add('selected');
-            currentIndex = index;
+    function setFocus(idx) {
+        items.forEach(item => item.classList.remove('selected'));
+        if (items[idx]) {
+            items[idx].classList.add('selected');
+            currentPos = idx;
         }
     }
 
-    updateSelection(0); // İlk açılışta YouTube'u seç
+    // İlk açılış odağı
+    setFocus(0);
 
     document.addEventListener('keydown', (e) => {
-        // Kumanda Kodları: 37:Sol, 39:Sağ, 13:Enter, 10009:Back
+        // Tizen Kumanda Kodları: 37:Sol, 39:Sağ, 13:Tamam, 10009:Geri
         switch(e.keyCode) {
             case 37: // Sol
-                if (currentIndex > 0) updateSelection(currentIndex - 1);
+                if (currentPos > 0) setFocus(currentPos - 1);
                 break;
             case 39: // Sağ
-                if (currentIndex < cards.length - 1) updateSelection(currentIndex + 1);
+                if (currentPos < items.length - 1) setFocus(currentPos + 1);
                 break;
-            case 13: // Enter (Tamam)
-                const target = cards[currentIndex];
-                const url = target.getAttribute('href');
-                const type = target.getAttribute('data-type');
+            case 13: // Tamam (Enter)
+                const link = items[currentPos].getAttribute('href');
+                const targetType = items[currentPos].getAttribute('data-target');
 
-                if (type === "youtube") {
+                if (targetType === "internal") {
                     e.preventDefault();
-                    ytFrame.src = url;
+                    ytFrame.src = link;
                     ytLayer.style.display = 'block';
                 } else {
-                    // Diğer siteleri normal tarayıcıda açar
-                    window.location.href = url;
+                    // TV Tarayıcısında doğrudan aç
+                    window.location.href = link;
                 }
                 break;
-            case 10009: // Return (Geri)
-            case 27:    // ESC
+            case 10009: // Geri (Return)
+            case 27:    // PC için ESC
                 if (ytLayer.style.display === 'block') {
-                    // YouTube açıksa kapat ve ana menüye dön
                     ytLayer.style.display = 'none';
                     ytFrame.src = "";
                 } else {
-                    // Uygulamadan Çıkış Mantığı: 2 kere hızlı basınca çıkar
-                    let currentTime = new Date().getTime();
-                    if (currentTime - lastBackClick < 500) {
+                    // 2 Kere Basınca Çıkış Mantığı
+                    backPressCount++;
+                    setFocus(0); // Tek basışta odağı YouTube'a (başa) çeker
+                    
+                    if (backPressCount === 1) {
+                        backTimer = setTimeout(() => { backPressCount = 0; }, 1500);
+                    } else if (backPressCount === 2) {
+                        clearTimeout(backTimer);
                         if (window.tizen) tizen.application.getCurrentApplication().exit();
-                    } else {
-                        lastBackClick = currentTime;
-                        // Tek basışta en başa (Ana Sayfa başlığına) odaklanmış gibi yap
-                        updateSelection(0);
                     }
                 }
                 break;
         }
     });
 
-    // Başlığa tıklayınca ana sayfaya yönlendir
-    document.getElementById('nav-home').addEventListener('click', () => {
+    // Ana Sayfa başlığına basınca her şeyi sıfırla
+    document.getElementById('main-nav').addEventListener('click', () => {
         window.location.reload();
     });
 });
