@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "ads": [".ad-container", ".ytp-ad-overlay", ".video-ads", "iframe[src*='ads']"],
+  "redirects": {
+    "youtube": "https://www.youtube.com/tv",
+    "film": "https://senin-film-siten.com"
+  }
+}
