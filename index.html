@@ -3,122 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TizenShield HBO Edition</title>
+    <title>Silver Play Pro</title>
     <style>
-        /* HBO Max Renk Paleti */
+        /* HBO MAX TEMASI */
         :root {
             --hbo-bg: radial-gradient(circle at center, #1d1042 0%, #000000 100%);
             --hbo-purple: #9933ff;
-            --hbo-blue: #00e0ff;
             --card-bg: #111;
         }
 
         body { 
-            margin: 0; 
-            background: var(--hbo-bg); 
-            background-attachment: fixed;
-            color: white; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; 
-            height: 100vh;
+            margin: 0; background: var(--hbo-bg); color: white; 
+            font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; 
         }
 
-        h1 {
-            text-align: center;
-            margin-top: 50px;
-            font-weight: 200;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #fff, var(--hbo-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        h1 { text-align: center; margin-top: 30px; letter-spacing: 5px; font-weight: 200; }
 
         .container { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 70vh; 
-            gap: 30px; 
-            padding: 0 50px;
+            display: flex; justify-content: center; align-items: center; 
+            height: 70vh; gap: 20px; padding: 0 40px; flex-wrap: wrap;
         }
 
-        /* HBO Stilinde Kartlar */
+        /* KARTLAR */
         .site-card { 
-            width: 280px; 
-            height: 160px;
-            background: var(--card-bg); 
-            border-radius: 8px; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer; 
-            border: 2px solid #333;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            outline: none;
+            width: 240px; height: 140px; background: var(--card-bg); 
+            border-radius: 10px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; cursor: pointer; 
+            border: 2px solid #333; transition: 0.3s; outline: none;
         }
 
-        /* Kumanda Odağı (Focus - *Odak*) */
-        .site-card:focus, .site-card.active { 
-            transform: scale(1.15); 
-            border-color: white;
-            box-shadow: 0 0 30px rgba(153, 51, 255, 0.6);
-            z-index: 10;
+        .site-card:focus, .site-card:hover { 
+            transform: scale(1.1); border-color: white;
+            box-shadow: 0 0 20px var(--hbo-purple);
         }
 
-        .site-card img { 
-            width: 120px; 
-            height: 60px; 
-            object-fit: contain; 
-            margin-bottom: 10px;
-            filter: grayscale(20%);
+        .site-card img { width: 80px; height: 50px; object-fit: contain; margin-bottom: 10px; }
+
+        /* SANAL MOUSE İMLECİ */
+        #virtual-cursor {
+            width: 25px; height: 25px; background: rgba(255, 255, 255, 0.5);
+            border: 2px solid var(--hbo-purple); border-radius: 50%;
+            position: fixed; top: 50%; left: 50%; z-index: 9999;
+            pointer-events: none; display: none; /* Sadece kumanda ile hareket edince görünür */
         }
 
-        .site-card:focus img { filter: grayscale(0%); }
-
-        .site-card p { 
-            margin: 0; 
-            font-size: 14px; 
-            font-weight: bold; 
-            letter-spacing: 1px;
-            color: #aaa;
-        }
-        
-        .site-card:focus p { color: white; }
-
-        /* Tarayıcı Katmanı */
-        #browser-container { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            z-index: 1000;
-            background: black;
-        }
+        /* TARAYICI ALANI */
+        #browser-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: black; }
         iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <h1>TizenShield</h1>
+    <div id="virtual-cursor"></div>
+    <h1>SILVER PLAY</h1>
 
     <div id="menu" class="container">
         <div class="site-card" tabindex="1" data-url="https://www.youtube.com/tv">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png">
-            <p>YOUTUBE</p>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png"><p>YOUTUBE</p>
         </div>
         <div class="site-card" tabindex="2" data-url="https://dizipal.com">
-            <img src="https://via.placeholder.com/150/FFD700/000000?text=DIZIPAL">
-            <p>DIZIPAL</p>
+            <img src="https://via.placeholder.com/150/FFD700/000000?text=DIZIPAL"><p>DIZIPAL</p>
         </div>
         <div class="site-card" tabindex="3" data-url="https://hdfilmcehennemi.com">
-            <img src="https://via.placeholder.com/150/00E0FF/000000?text=HDFILM">
-            <p>HD FILM</p>
+            <img src="https://via.placeholder.com/150/00E0FF/000000?text=HDFILM"><p>HD FILM</p>
         </div>
         <div class="site-card" tabindex="4" data-url="https://dizibox.com">
-            <img src="https://via.placeholder.com/150/E50914/FFFFFF?text=DIZIBOX">
-            <p>DIZIBOX</p>
+            <img src="https://via.placeholder.com/150/E50914/FFFFFF?text=DIZIBOX"><p>DIZIBOX</p>
         </div>
     </div>
 
@@ -127,41 +77,70 @@
     </div>
 
     <script>
-        const cards = document.querySelectorAll('.site-card');
-        const menu = document.getElementById('menu');
-        const container = document.getElementById('browser-container');
+        const cursor = document.getElementById('virtual-cursor');
         const frame = document.getElementById('target-frame');
+        const container = document.getElementById('browser-container');
+        const menu = document.getElementById('menu');
 
-        // İlk kartı otomatik seç (Kumanda için kolaylık)
-        cards[0].focus();
+        let cX = window.innerWidth / 2;
+        let cY = window.innerHeight / 2;
+        const speed = 25;
 
-        // Tıklama veya Kumanda Enter tuşu
-        cards.forEach(card => {
-            card.addEventListener('click', () => openSite(card.dataset.url));
-            card.addEventListener('keydown', (e) => {
-                if(e.keyCode === 13) openSite(card.dataset.url);
+        // 1. REKLAM ENGELLEYİCİ (Ad-Blocker - *Reklam Engelleyici*)
+        function startAdBlock() {
+            setInterval(() => {
+                try {
+                    const adRules = ".ad-container, .ytp-ad-overlay, .video-ads, iframe[src*='ads'], #popunder, .ad-banner";
+                    const style = document.createElement('style');
+                    style.innerHTML = adRules + " { display: none !important; pointer-events: none !important; }";
+                    frame.contentDocument.head.appendChild(style);
+                } catch (e) { /* Güvenlik kısıtlaması olursa atla */ }
+            }, 1000);
+        }
+
+        // 2. KUMANDA VE MOUSE KONTROLLERİ (Controls - *Kontroller*)
+        document.addEventListener('keydown', (e) => {
+            cursor.style.display = 'block'; // Kumanda basılınca imleci göster
+
+            switch(e.keyCode) {
+                case 37: cX -= speed; break; // Sol
+                case 38: cY -= speed; break; // Yukarı
+                case 39: cX += speed; break; // Sağ
+                case 40: cY += speed; break; // Aşağı
+                case 13: // Enter (Tıklama - *Tıklama*)
+                    const el = document.elementFromPoint(cX, cY);
+                    if (el) el.click();
+                    break;
+                case 10009: // Tizen Geri Tuşu (Back - *Geri*)
+                    if (container.style.display === 'block') {
+                        container.style.display = 'none';
+                        menu.style.display = 'flex';
+                        frame.src = "";
+                    }
+                    break;
+            }
+            cursor.style.left = cX + 'px';
+            cursor.style.top = cY + 'px';
+        });
+
+        // 3. KABLOSUZ MOUSE DESTEĞİ (Wireless Mouse - *Kablosuz Fare*)
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.display = 'none'; // Gerçek mouse varsa sanal imleci gizle
+        });
+
+        // SİTE AÇMA FONKSİYONU
+        document.querySelectorAll('.site-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const url = card.dataset.url;
+                menu.style.display = 'none';
+                container.style.display = 'block';
+                frame.src = url;
+                startAdBlock();
             });
         });
 
-        function openSite(url) {
-            menu.style.display = 'none';
-            document.querySelector('h1').style.display = 'none';
-            container.style.display = 'block';
-            frame.src = url;
-        }
-
-        // Geri Tuşu (Tizen Remote Back Button)
-        document.addEventListener('keydown', (e) => {
-            if (e.keyCode === 10009 || e.keyCode === 27) { 
-                if (container.style.display === 'block') {
-                    container.style.display = 'none';
-                    menu.style.display = 'flex';
-                    document.querySelector('h1').style.display = 'block';
-                    frame.src = ""; 
-                    cards[0].focus();
-                }
-            }
-        });
+        // İlk kartı seç
+        document.querySelector('.site-card').focus();
     </script>
 </body>
 </html>
