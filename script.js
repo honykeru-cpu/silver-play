@@ -1,55 +1,63 @@
-let currentPos = 0;
-let backPressCount = 0;
-let backTimer;
+let focusIdx = 0;
+let backPresses = 0;
+let backResetTimer;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const items = document.querySelectorAll('.selectable');
-    const ytLayer = document.getElementById('yt-layer');
-    const ytFrame = document.getElementById('yt-frame');
+    const cards = document.querySelectorAll('.selectable');
+    const layer = document.getElementById('yt-layer');
+    const frame = document.getElementById('yt-frame');
 
-    function setFocus(idx) {
-        items.forEach(item => item.classList.remove('selected'));
-        if (items[idx]) {
-            items[idx].classList.add('selected');
-            currentPos = idx;
+    function applyFocus(idx) {
+        cards.forEach(c => c.classList.remove('selected'));
+        if (cards[idx]) {
+            cards[idx].classList.add('selected');
+            focusIdx = idx;
         }
     }
 
-    setFocus(0);
+    applyFocus(0); // Başlangıç odağı YouTube
 
     document.addEventListener('keydown', (e) => {
+        // Tizen Tuş Kodları: 37:Sol, 39:Sağ, 13:Enter, 10009:Geri
         switch(e.keyCode) {
-            case 37: if (currentPos > 0) setFocus(currentPos - 1); break;
-            case 39: if (currentPos < items.length - 1) setFocus(currentPos + 1); break;
-            case 13: // Enter
-                const link = items[currentPos].getAttribute('href');
-                const type = items[currentPos].getAttribute('data-type');
+            case 37: if (focusIdx > 0) applyFocus(focusIdx - 1); break;
+            case 39: if (focusIdx < cards.length - 1) applyFocus(focusIdx + 1); break;
+            case 13: // Enter (Tamam)
+                const url = cards[focusIdx].getAttribute('href');
+                const targetType = cards[focusIdx].getAttribute('data-type');
 
-                if (type === "internal") {
+                if (targetType === "internal") {
                     e.preventDefault();
-                    ytLayer.style.display = 'block';
-                    ytFrame.src = link;
+                    layer.style.display = 'block';
+                    frame.src = url;
                 } else {
-                    // Tarayıcıya zorla fırlat
-                    if (window.tizen) {
+                    // Samsung TV Tarayıcısını Zorla Aç (AppControl Metodu)
+                    if (window.tizen && tizen.application) {
                         try {
-                            const appControl = new tizen.ApplicationControl("http://tizen.org/appcontrol/operation/view", link);
-                            tizen.application.launchAppControl(appControl, "org.tizen.browser", null, null);
-                        } catch(i) { window.location.href = link; }
-                    } else { window.open(link, '_blank'); }
+                            const control = new tizen.ApplicationControl(
+                                "http://tizen.org/appcontrol/operation/view",
+                                url
+                            );
+                            tizen.application.launchAppControl(control, "org.tizen.browser",
+                                null, (err) => { window.location.href = url; }
+                            );
+                        } catch(h) { window.location.href = url; }
+                    } else { window.open(url, '_blank'); }
                 }
                 break;
-            case 10009: // Geri
-                if (ytLayer.style.display === 'block') {
-                    ytLayer.style.display = 'none';
-                    ytFrame.src = "";
+            case 10009: // Return (Geri)
+                if (layer.style.display === 'block') {
+                    layer.style.display = 'none';
+                    frame.src = "";
                 } else {
-                    backPressCount++;
-                    setFocus(0); // Tek tuş başa atar
-                    if (backPressCount === 1) {
-                        backTimer = setTimeout(() => { backPressCount = 0; }, 1500);
-                    } else if (backPressCount === 2) {
-                        clearTimeout(backTimer);
+                    // Tek basış: Ana Sayfaya At | İkinci basış: Çıkış
+                    backPresses++;
+                    applyFocus(0); // Odağı YouTube'a (başa) çek
+                    
+                    if (backPresses === 1) {
+                        backResetTimer = setTimeout(() => { backPresses = 0; }, 1500);
+                    } else if (backPresses === 2) {
+                        clearTimeout(backResetTimer);
                         if (window.tizen) tizen.application.getCurrentApplication().exit();
                     }
                 }
@@ -57,5 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.getElementById('main-nav').addEventListener('click', () => { window.location.reload(); });
+    // Logo'ya tıklanınca sayfayı yenile (Ana Sayfa yönlendirme)
+    document.getElementById('logo-nav').addEventListener('click', () => {
+        window.location.reload();
+    });
 });
