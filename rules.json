@@ -1,24 +1,30 @@
-// Tizen Kumanda Tuşlarını Tanımlama (Remote Key Mapping - Uzaktan Kumanda Tuş Eşlemesi)
+// Tizen Remote Key Mapping (Uzaktan Kumanda Tuş Eşlemesi - Anahtar Haritalama)
 document.addEventListener('keydown', function(e) {
     console.log("Basılan Tuş Kodu: " + e.keyCode);
-    
+
     switch(e.keyCode) {
-        case 37: // Sol (Left)
-            // Sol tuş fonksiyonunu buraya çağır
+        case 37: // Left (Sol)
+            console.log("Sola basıldı");
+            // Buraya sol tuş fonksiyonunu ekleyeceğiz
             break;
-        case 38: // Yukarı (Up)
+        case 38: // Up (Yukarı)
+            console.log("Yukarı basıldı");
             break;
-        case 39: // Sağ (Right)
-            // Sağ tuş fonksiyonunu buraya çağır
+        case 39: // Right (Sağ)
+            console.log("Sağa basıldı");
+            // Buraya sağ tuş fonksiyonunu ekleyeceğiz
             break;
-        case 40: // Aşağı (Down)
+        case 40: // Down (Aşağı)
+            console.log("Aşağı basıldı");
             break;
-        case 13: // Tamam (Enter/OK)
-            // Seçili olanı açma fonksiyonu
+        case 13: // Enter/OK (Tamam/Seç)
+            console.log("Tamam basıldı");
             break;
-        case 10009: // Geri (Return/Back)
-            // Uygulamadan çıkmak veya geri gelmek için
-            tizen.application.getCurrentApplication().hide(); 
+        case 10009: // Return/Back (Geri/Dönüş)
+            console.log("Geri basıldı");
+            if (window.tizen) {
+                tizen.application.getCurrentApplication().hide();
+            }
             break;
     }
 });
