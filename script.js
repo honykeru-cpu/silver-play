@@ -1,51 +1,140 @@
-// main.js - Sadece kumanda + mouse desteği (hiçbir şey eklemez, senin app'ine dokunmaz)
+// script.js - Silverplay Pro için Tizen TV: Kumanda + Mouse + Smooth Navigasyon + API entegrasyonu
 
-window.onload = function() {
-    // 1. Kumanda tuşlarını aktif et (gecikmeli, Tizen hazır olsun)
-    setTimeout(() => {
+document.addEventListener('DOMContentLoaded', function () {
+    // Kumanda tuşlarını kaydet (gecikmeli – Tizen hazır olsun)
+    setTimeout(function () {
         try {
-            if (tizen && tizen.tvinputdevice) {
+            if (typeof tizen !== 'undefined' && tizen.tvinputdevice) {
                 tizen.tvinputdevice.registerKeyBatch([
                     'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
                     'Enter', 'Return', 'Exit', 'Back'
                 ]);
-                console.log("Kumanda tuşları aktif.");
+                console.log('Kumanda tuşları kaydedildi → ok, enter, geri çalışıyor');
             } else {
-                console.error("Tizen objesi bulunamadı.");
+                console.warn('Tizen objesi yok – privilege eksik olabilir');
             }
-        } catch (e) {
-            console.error("Kumanda hatası:", e.message);
+        } catch (err) {
+            console.error('Kumanda kayıt hatası:', err.message);
         }
-    }, 800);
+    }, 1200);  // 1.2 sn bekle – çoğu TV'de yeterli
 
-    // 2. Mouse desteği (fareyi hareket ettirince hover/focus doğal çalışsın)
-    document.body.style.cursor = 'default';
-    document.addEventListener('pointermove', () => {
-        // Mouse hareketi algılandı, TV pointer'ı aktif
-        if (tizen && tizen.tvinputdevice) {
-            tizen.tvinputdevice.registerKey('Pointer'); // fareyi TV kumandası gibi kullan
+    // Kutuları seç (senin .box class'lı a etiketleri)
+    const boxes = document.querySelectorAll('.grid-container .box');
+    let currentIndex = 0;
+
+    // Focus stili uygula (CSS'e bağımlı değil, JS ile yönet)
+    function focusCurrentBox() {
+        boxes.forEach((b, idx) => {
+            b.classList.toggle('focused', idx === currentIndex);
+        });
+        if (boxes[currentIndex]) {
+            boxes[currentIndex].focus();
+        }
+    }
+
+    // İlk kutuya odaklan
+    if (boxes.length > 0) {
+        focusCurrentBox();
+    }
+
+    // Mouse desteği: hover ile focus değiştir + tıklama ile aç
+    boxes.forEach((box, index) => {
+        box.addEventListener('mouseover', function () {
+            currentIndex = index;
+            focusCurrentBox();
+        });
+
+        box.addEventListener('click', function (e) {
+            e.preventDefault();
+            openAPI(box.href, box.getAttribute('data-name') || box.textContent.trim());
+        });
+    });
+
+    // Kumanda tuş dinleyicisi
+    document.addEventListener('keydown', function (e) {
+        const key = e.keyCode;
+        let handled = true;
+
+        switch (key) {
+            case 37: // Sol ←
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    focusCurrentBox();
+                }
+                break;
+
+            case 39: // Sağ →
+                if (currentIndex < boxes.length - 1) {
+                    currentIndex++;
+                    focusCurrentBox();
+                }
+                break;
+
+            case 38: // Yukarı ↑
+                if (currentIndex >= 4) {  // 4 sütun varsayımı (senin grid 4 tane)
+                    currentIndex -= 4;
+                    focusCurrentBox();
+                }
+                break;
+
+            case 40: // Aşağı ↓
+                if (currentIndex + 4 < boxes.length) {
+                    currentIndex += 4;
+                    focusCurrentBox();
+                }
+                break;
+
+            case 13: // Enter (OK tuşu)
+                if (boxes[currentIndex]) {
+                    openAPI(boxes[currentIndex].href, boxes[currentIndex].getAttribute('data-name') || boxes[currentIndex].textContent.trim());
+                }
+                break;
+
+            case 10009: // Return / Back (çoğu Tizen'de 10009)
+            case 461:   // Bazı modellerde alternatif Back kodu
+                if (!document.getElementById('video-container').classList.contains('hidden')) {
+                    closeAPI();  // Videodan çık
+                } else {
+                    try {
+                        tizen.application.getCurrentApplication().exit();  // Ana ekrandan app'i kapat
+                    } catch (ex) {
+                        console.warn('Çıkış yapılamadı:', ex);
+                    }
+                }
+                break;
+
+            default:
+                handled = false;
+        }
+
+        if (handled) {
+            e.preventDefault();
+            e.stopPropagation();
         }
     });
 
-    // 3. Tuşları yakala (senin app'in zaten varsa, sadece bu event'i ekle)
-    document.addEventListener('keydown', (e) => {
-        console.log("Tuş basıldı:", e.keyCode); // test için, sonra silersin
+    // Senin orijinal open/close fonksiyonları (window'a ekliyoruz ki HTML'deki onclick görsün)
+    window.openAPI = function (url, title) {
+        const frame = document.getElementById('api-frame');
+        const container = document.getElementById('video-container');
+        const apiTitle = document.getElementById('api-title');
 
-        // Senin uygulamanın kendi tuş mantığını buraya bağla
-        // Örnek: Enter'a basıldığında bir şey yap
-        if (e.keyCode === 13) {
-            console.log("Enter: Seçildi!");
-            // buraya senin API çağrısını koy: mesela fetchSeasonStudio();
+        if (url && frame && container && apiTitle) {
+            apiTitle.textContent = title || 'YÜKLENİYOR...';
+            frame.src = url;
+            container.classList.remove('hidden');
+            frame.focus();  // iframe'e odaklan (kumanda orada devam etsin)
         }
-        if (e.keyCode === 10009 || e.keyCode === 461) {
-            console.log("Geri: Çıkılıyor...");
-            tizen.application.getCurrentApplication().exit();
-        }
-    });
+    };
 
-    // Mouse tıklamalarını da yakala (isteğe bağlı)
-    document.addEventListener('click', (e) => {
-        console.log("Mouse tıklandı:", e.target);
-        // senin app'in tıklama mantığını buraya bağla
-    });
-};
+    window.closeAPI = function () {
+        const container = document.getElementById('video-container');
+        const frame = document.getElementById('api-frame');
+
+        if (frame && container) {
+            frame.src = '';  // temizle
+            container.classList.add('hidden');
+            focusCurrentBox();  // ana gride geri odaklan
+        }
+    };
+});
